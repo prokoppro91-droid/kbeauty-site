@@ -429,3 +429,29 @@ footer .social a:hover{background:var(--gold-2)}
   .showcase .wrap{grid-template-columns:1fr;gap:18px}
   .showcase .sc-art{height:280px;order:-1}
 }
+
+/* ---------- hero: сцена з баночками (обертання + краплі, злиття з фоном) ---------- */
+.hero .hero-art{background:radial-gradient(circle at 55% 42%, #f4ecde 0%, #f4ecde 38%, rgba(244,236,222,0) 72%)}
+.jarscene{position:relative;width:100%;height:100%;display:grid;place-items:center;overflow:visible}
+.jarscene .glow{position:absolute;width:78%;aspect-ratio:1;border-radius:50%;z-index:0;filter:blur(8px);
+  background:radial-gradient(circle, rgba(201,164,76,.20), rgba(201,164,76,0) 68%);animation:jpulse 6s ease-in-out infinite}
+@keyframes jpulse{50%{opacity:.55;transform:scale(1.07)}}
+.jarscene .jar{position:absolute;z-index:2;mix-blend-mode:multiply;
+  -webkit-mask-image:radial-gradient(closest-side,#000 60%,transparent 96%);
+          mask-image:radial-gradient(closest-side,#000 60%,transparent 96%);
+  filter:drop-shadow(0 26px 36px rgba(120,90,40,.16));will-change:transform}
+.jarscene .jar.j1{width:64%;animation:spinA 9s ease-in-out infinite, floatA 6s ease-in-out infinite}
+.jarscene .jar.j2{width:36%;right:4%;bottom:8%;animation:spinB 7.5s ease-in-out infinite, floatA 5s ease-in-out infinite reverse}
+@keyframes spinA{0%,100%{transform:perspective(700px) rotateY(-17deg)}50%{transform:perspective(700px) rotateY(17deg)}}
+@keyframes spinB{0%,100%{transform:perspective(600px) rotateY(20deg)}50%{transform:perspective(600px) rotateY(-20deg)}}
+@keyframes floatA{50%{translate:0 -14px}}
+.jarscene .drop{position:absolute;top:4%;width:8px;height:8px;border-radius:50% 50% 50% 0;transform:rotate(45deg);z-index:3;opacity:0;
+  background:linear-gradient(160deg, rgba(255,255,255,.95), rgba(201,164,76,.55));box-shadow:0 0 6px rgba(255,255,255,.5);
+  animation:drip 3.4s linear infinite}
+@keyframes drip{0%{opacity:0;top:2%}12%{opacity:.95}82%{opacity:.6}100%{opacity:0;top:74%}}
+.jarscene .d1{left:30%;animation-delay:0s}.jarscene .d2{left:46%;animation-delay:.8s}
+.jarscene .d3{left:58%;animation-delay:1.5s}.jarscene .d4{left:38%;animation-delay:2.2s}
+.jarscene .d5{left:66%;animation-delay:.4s}.jarscene .d6{left:52%;animation-delay:2.8s}
+.jarscene .d7{left:42%;animation-delay:1.1s}.jarscene .d8{left:62%;animation-delay:1.9s}
+.jarscene .chip.c1{position:absolute;top:8%;right:2%;z-index:4}
+@media(prefers-reduced-motion:reduce){.jarscene .jar,.jarscene .drop,.jarscene .glow{animation:none!important}.jarscene .drop{display:none}}
