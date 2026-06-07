@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K-Beauty Profi 🇰🇷 — Корейська професійна косметика та косметологія</title>
+<meta name="description" content="Каталог корейської професійної косметики та засобів косметології: креми, сироватки, мезотерапія, філери, ботулотоксин, пілінги. K-Beauty Profi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c9a44c'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Georgia'>KB</text></svg>">
+</head>
+<body>
+
+<!-- topbar -->
+<div class="topbar"><div class="wrap">
+  <div class="tb-left">🇰🇷 Оригінальна косметика з Південної Кореї · Доставка по Україні</div>
+  <div class="tb-right">
+    <a href="https://t.me/kbeauty_profi" target="_blank">Telegram-канал</a>
+    <a href="https://www.instagram.com/face_expert_anna" target="_blank">Instagram</a>
+  </div>
+</div></div>
+
+<!-- header -->
+<header class="site"><div class="wrap">
+  <a href="#" class="logo">
+    <span class="mark">KB</span>
+    <span class="lt"><b>K-Beauty Profi</b><span>Korean Cosmetics</span></span>
+  </a>
+  <div class="search">
+    <input id="searchInput" type="search" placeholder="Пошук: крем, сироватка, бренд, філер…" autocomplete="off">
+    <span class="si">🔍</span>
+  </div>
+  <button class="cart-btn" id="cartBtn">🛍️ Кошик <span class="count" id="cartCount" style="display:none">0</span></button>
+</div></header>
+
+<!-- hero -->
+<section class="hero"><div class="wrap">
+  <div>
+    <span class="flag">🇰🇷 K-Beauty · Korea</span>
+    <h1>Корейська <em>професійна</em> косметика та косметологія</h1>
+    <p>Повний каталог засобів корейського ринку — від домашнього догляду до інʼєкційної естетики. Оригінал, актуальні новинки, чесний підбір.</p>
+    <div class="cta">
+      <button class="btn primary" id="heroBrowse">Перейти до каталогу →</button>
+      <a class="btn ghost" href="https://www.instagram.com/face_expert_anna" target="_blank">Консультація косметолога</a>
+    </div>
+    <div class="stats">
+      <div><b>50+</b><span>позицій у каталозі</span></div>
+      <div><b>25+</b><span>корейських брендів</span></div>
+      <div><b>14</b><span>категорій</span></div>
+    </div>
+  </div>
+  <div class="hero-art">
+    <span class="blob">🧴</span>
+    <span class="tag t1">✨ Оригінал K-beauty</span>
+    <span class="tag t2">💉 Профзасоби</span>
+    <span class="tag t3">🇰🇷 Korea</span>
+  </div>
+</div></section>
+
+<!-- group toggle -->
+<section class="groups"><div class="wrap">
+  <div class="gt" id="gt">
+    <button data-group="care" class="active">🧴 Косметика для догляду</button>
+    <button data-group="pro">💉 Професійна косметологія</button>
+  </div>
+</div></section>
+
+<!-- категорії -->
+<section id="cats-sec"><div class="wrap">
+  <div class="sec-head">
+    <span class="k">Каталог за категоріями</span>
+    <h2 id="secTitle">Косметика для догляду</h2>
+    <p id="secDesc">Корейські засоби для домашнього та салонного догляду.</p>
+  </div>
+  <div class="cats" id="cats"></div>
+</div></section>
+
+<!-- каталог -->
+<section class="catalog" id="catalog"><div class="wrap">
+  <div class="pro-note" id="proNote" style="display:none">
+    <span class="ic">⚕️</span>
+    <div><b>Професійні засоби.</b> Інʼєкційні препарати, токсини та пілінги відпускаються виключно сертифікованим лікарям-косметологам і не призначені для самостійного застосування. Ціни орієнтовні.</div>
+  </div>
+  <div class="toolbar">
+    <div class="chips" id="chips"></div>
+    <div class="sort">
+      <select id="sortSel">
+        <option value="pop">Спочатку популярні</option>
+        <option value="new">Спочатку новинки</option>
+        <option value="price-asc">Ціна: за зростанням</option>
+        <option value="price-desc">Ціна: за спаданням</option>
+      </select>
+    </div>
+  </div>
+  <div class="result-info" id="result"></div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<!-- переваги -->
+<section class="perks"><div class="wrap">
+  <div class="sec-head"><span class="k">Чому ми</span><h2>Переваги K-Beauty Profi</h2></div>
+  <div class="grid4">
+    <div class="perk"><div class="ic">🇰🇷</div><b>100% оригінал</b><p>Засоби напряму з корейського ринку — без підробок.</p></div>
+    <div class="perk"><div class="ic">👩‍⚕️</div><b>Підбір фахівцем</b><p>Косметолог допоможе зібрати догляд під вашу шкіру.</p></div>
+    <div class="perk"><div class="ic">🚚</div><b>Доставка Україною</b><p>Нова пошта та адресна доставка у будь-яке місто.</p></div>
+    <div class="perk"><div class="ic">🆕</div><b>Свіжі новинки</b><p>Стежимо за трендами K-beauty та оновлюємо каталог.</p></div>
+  </div>
+</div></section>
+
+<!-- footer -->
+<footer class="site"><div class="wrap">
+  <div class="grid-f">
+    <div>
+      <div class="logo"><span class="mark">KB</span><span class="lt"><b>K-Beauty Profi</b><span>Korean Cosmetics</span></span></div>
+      <p class="fdesc">Каталог корейської професійної косметики та засобів косметології. Оригінал, актуальні новинки, експертний підбір догляду.</p>
+      <div class="social">
+        <a href="https://t.me/kbeauty_profi" target="_blank" title="Telegram">✈️</a>
+        <a href="https://www.instagram.com/face_expert_anna" target="_blank" title="Instagram">📷</a>
+      </div>
+    </div>
+    <div><h4>Каталог</h4><ul>
+      <li><a href="#cats-sec">Креми</a></li><li><a href="#cats-sec">Сироватки</a></li>
+      <li><a href="#cats-sec">Сонцезахист</a></li><li><a href="#cats-sec">Маски</a></li>
+      <li><a href="#cats-sec">Очищення</a></li>
+    </ul></div>
+    <div><h4>Косметологія</h4><ul>
+      <li><a href="#cats-sec">Мезотерапія</a></li><li><a href="#cats-sec">Філери</a></li>
+      <li><a href="#cats-sec">Ботулотоксин</a></li><li><a href="#cats-sec">Пілінги</a></li>
+      <li><a href="#cats-sec">Нитки</a></li>
+    </ul></div>
+    <div><h4>Контакти</h4><ul>
+      <li>📍 Хмельницький, Україна</li>
+      <li>📷 <a href="https://www.instagram.com/face_expert_anna" target="_blank">@face_expert_anna</a></li>
+      <li>✈️ <a href="https://t.me/kbeauty_profi" target="_blank">@kbeauty_profi</a></li>
+      <li>🕒 Пн–Сб, консультації за записом</li>
+    </ul></div>
+  </div>
+  <div class="copy">
+    <span>© 2026 K-Beauty Profi. Усі права захищено.</span>
+    <span>Інʼєкційні засоби — лише для фахівців. Ціни орієнтовні.</span>
+  </div>
+</div></footer>
+
+<!-- модалка товару -->
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+
+<!-- кошик -->
+<div class="overlay" id="scrim" style="z-index:105"></div>
+<aside class="drawer" id="drawer">
+  <div class="dh"><h3>🛍️ Ваш кошик</h3><button class="close" id="drawerClose">×</button></div>
+  <div class="ditems" id="ditems"></div>
+  <div class="dfoot" id="dfoot">
+    <div class="total"><span>Разом:</span><b id="dtotal">0 грн</b></div>
+    <button class="order" id="orderBtn">Оформити замовлення →</button>
+    <p class="hint">Список скопіюється у буфер — надішліть його у Direct Instagram для підтвердження.</p>
+  </div>
+</aside>
+
+<!-- toast -->
+<div class="toast" id="toast"></div>
+
+<script src="products.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
