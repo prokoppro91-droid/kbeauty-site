@@ -215,13 +215,44 @@ function closeModal(){$("#overlay").classList.remove("open");}
 
 /* ---------- розділ (group) ---------- */
 function setGroup(g){
+  const enteringPro = (g==="pro" && state.group!=="pro");
   state.group=g; state.cat="all";
+  if(enteringPro) playSvcTrans("Професійна косметологія","Інʼєкційна естетика · пілінги · апаратні методики");
   $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===g));
   $("#secTitle").textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
   $("#secDesc").textContent  = g==="care"
     ? "Корейські засоби для домашнього та салонного догляду — від очищення до антивікових кремів."
     : "Інʼєкційні препарати, біоревіталізанти, пілінги та розхідники. Відпуск — лише сертифікованим фахівцям.";
   renderCats(); renderChips(); renderGrid();
+}
+
+/* ---------- інтро-заставка (показ раз за сесію) ---------- */
+function runIntro(){
+  const intro=document.getElementById("intro"); if(!intro) return;
+  if(sessionStorage.getItem("kb_intro")){ intro.remove(); return; }
+  const dismiss=()=>{ if(!intro.parentNode)return; intro.classList.add("hide");
+    sessionStorage.setItem("kb_intro","1"); setTimeout(()=>intro.remove(),1100); };
+  const t=setTimeout(dismiss,3100);
+  intro.addEventListener("click",()=>{clearTimeout(t);dismiss();});
+}
+
+/* ---------- поява при скролі (reveal) ---------- */
+let revObs;
+function observeReveals(){
+  const els=$$(".reveal:not(.in)");
+  if(!("IntersectionObserver" in window)){ els.forEach(e=>e.classList.add("in")); return; }
+  if(!revObs) revObs=new IntersectionObserver(ents=>{
+    ents.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); revObs.unobserve(en.target); } });
+  },{threshold:.12,rootMargin:"0px 0px -7% 0px"});
+  els.forEach(e=>revObs.observe(e));
+}
+
+/* ---------- перехід у розділ послуг (hiskin-style) ---------- */
+function playSvcTrans(title,sub){
+  const el=document.getElementById("svcTrans"); if(!el) return;
+  el.querySelector(".st-tx").innerHTML=`${title}<span>${sub||""}</span>`;
+  el.classList.remove("run"); void el.offsetWidth; el.classList.add("run");
+  setTimeout(()=>el.classList.remove("run"),1250);
 }
 
 /* ---------- toast ---------- */
@@ -242,9 +273,12 @@ function init(){
   $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal();};
   $("#orderBtn").onclick=checkout;
   $("#heroBrowse").onclick=()=>document.getElementById("cats-sec").scrollIntoView({behavior:"smooth"});
+  const scb=document.getElementById("scBtn"); if(scb) scb.onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();}});
 
   setGroup("care");
   updateCartUI();
+  runIntro();
+  observeReveals();
 }
 document.addEventListener("DOMContentLoaded",init);

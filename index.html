@@ -13,6 +13,20 @@
 </head>
 <body>
 
+<!-- інтро-заставка (стиль D&G) -->
+<div id="intro">
+  <video class="in-bg" autoplay muted loop playsinline poster="img/hero2.jpg">
+    <source src="img/promo_8131887.mp4" type="video/mp4">
+  </video>
+  <span class="in-veil"></span>
+  <div class="in-c">
+    <div class="in-mark">A.L.</div>
+    <div class="in-line"></div>
+    <div class="in-sub">K-Beauty Profi · Korean Cosmetics</div>
+  </div>
+  <span class="in-skip">Увійти →</span>
+</div>
+
 <!-- topbar -->
 <div class="topbar"><div class="wrap">
   <div class="tb-left">🇰🇷 Оригінальна косметика з Південної Кореї · Доставка по Україні</div>
@@ -73,7 +87,7 @@
 
 <!-- категорії -->
 <section id="cats-sec"><div class="wrap">
-  <div class="sec-head">
+  <div class="sec-head reveal">
     <span class="k">Каталог за категоріями</span>
     <h2 id="secTitle">Косметика для догляду</h2>
     <p id="secDesc">Корейські засоби для домашнього та салонного догляду.</p>
@@ -102,14 +116,30 @@
   <div class="grid" id="grid"></div>
 </div></section>
 
+<!-- showcase з баночками (стиль bryhel) -->
+<section class="showcase"><div class="wrap">
+  <div class="sc-art reveal">
+    <span class="sc-glow"></span>
+    <img class="sc-mini m1" src="img/p41.jpg" alt="" loading="lazy">
+    <img class="sc-mini m2" src="img/p12.jpg" alt="" loading="lazy">
+    <img class="sc-jar" src="img/p2.jpg" alt="Бестселер K-beauty" loading="lazy">
+  </div>
+  <div class="sc-tx reveal d1">
+    <span class="k">Бестселери</span>
+    <h2>Догляд, який обожнюють</h2>
+    <p>Найпопулярніші засоби корейського ринку — перевірені формули з видимим результатом. Оригінал, підібраний з увагою до кожної деталі.</p>
+    <button class="btn primary" id="scBtn">Дивитися каталог →</button>
+  </div>
+</div></section>
+
 <!-- переваги -->
 <section class="perks"><div class="wrap">
-  <div class="sec-head"><span class="k">Чому ми</span><h2>Переваги K-Beauty Profi</h2></div>
+  <div class="sec-head reveal"><span class="k">Чому ми</span><h2>Переваги K-Beauty Profi</h2></div>
   <div class="grid4">
-    <div class="perk"><div class="ic">🇰🇷</div><b>100% оригінал</b><p>Засоби напряму з корейського ринку — без підробок.</p></div>
-    <div class="perk"><div class="ic">👩‍⚕️</div><b>Підбір фахівцем</b><p>Косметолог допоможе зібрати догляд під вашу шкіру.</p></div>
-    <div class="perk"><div class="ic">🚚</div><b>Доставка Україною</b><p>Нова пошта та адресна доставка у будь-яке місто.</p></div>
-    <div class="perk"><div class="ic">🆕</div><b>Свіжі новинки</b><p>Стежимо за трендами K-beauty та оновлюємо каталог.</p></div>
+    <div class="perk reveal"><div class="ic">🇰🇷</div><b>100% оригінал</b><p>Засоби напряму з корейського ринку — без підробок.</p></div>
+    <div class="perk reveal d1"><div class="ic">👩‍⚕️</div><b>Підбір фахівцем</b><p>Косметолог допоможе зібрати догляд під вашу шкіру.</p></div>
+    <div class="perk reveal d2"><div class="ic">🚚</div><b>Доставка Україною</b><p>Нова пошта та адресна доставка у будь-яке місто.</p></div>
+    <div class="perk reveal d3"><div class="ic">🆕</div><b>Свіжі новинки</b><p>Стежимо за трендами K-beauty та оновлюємо каталог.</p></div>
   </div>
 </div></section>
 
@@ -161,6 +191,9 @@
     <p class="hint">Список скопіюється у буфер — надішліть його у Direct Instagram для підтвердження.</p>
   </div>
 </aside>
+
+<!-- перехід у розділ послуг (стиль hiskin) -->
+<div id="svcTrans"><div class="st-tx"></div></div>
 
 <!-- toast -->
 <div class="toast" id="toast"></div>

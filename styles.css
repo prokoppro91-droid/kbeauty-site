@@ -359,3 +359,73 @@ footer .social a:hover{background:var(--gold-2)}
   .hero-art{height:260px}
   .hero-art .chip{font-size:11px;padding:8px 12px}
 }
+
+/* =====================================================================
+   ПРЕМІУМ-АНІМАЦІЇ
+   ===================================================================== */
+
+/* ---- Інтро-заставка (стиль D&G Beauty) ---- */
+#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;overflow:hidden;background:#1c1a17}
+#intro.hide{animation:introUp 1.05s cubic-bezier(.76,0,.24,1) forwards}
+@keyframes introUp{to{transform:translateY(-100%);visibility:hidden}}
+#intro .in-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5}
+#intro .in-veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(28,26,23,.5),rgba(28,26,23,.78))}
+#intro .in-c{position:relative;z-index:2;text-align:center;color:#fff;padding:20px}
+#intro .in-mark{font-family:var(--serif);font-size:clamp(70px,18vw,190px);font-weight:600;letter-spacing:.04em;line-height:1;
+  color:#fff;opacity:0;transform:translateY(24px);animation:inWord 1.2s .15s cubic-bezier(.2,.7,.2,1) forwards}
+#intro .in-line{width:0;height:2px;background:var(--gold);margin:20px auto;animation:inLine 1s .85s cubic-bezier(.2,.7,.2,1) forwards}
+#intro .in-sub{font-size:clamp(11px,2.6vw,15px);letter-spacing:.36em;text-transform:uppercase;color:#e7d3a1;
+  opacity:0;animation:inSub 1.1s 1.05s ease forwards}
+#intro .in-skip{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;color:#cdbfa3;
+  font-size:11px;letter-spacing:.22em;text-transform:uppercase;opacity:0;animation:inSub 1s 1.8s ease forwards;cursor:pointer}
+#intro .in-skip:hover{color:#fff}
+@keyframes inWord{to{opacity:1;transform:none}}
+@keyframes inLine{to{width:130px}}
+@keyframes inSub{to{opacity:1}}
+
+/* ---- Поява при скролі (стиль truekind) ---- */
+.reveal{opacity:0;transform:translateY(32px);
+  transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1)}
+.reveal.in{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}.reveal.d2{transition-delay:.16s}.reveal.d3{transition-delay:.24s}
+
+/* ---- Showcase з баночками (стиль bryhel) ---- */
+.showcase{background:radial-gradient(120% 100% at 100% 0%,var(--powder),transparent 55%),
+  linear-gradient(135deg,var(--bg-2),#fff);padding:66px 0;overflow:hidden}
+.showcase .wrap{display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center}
+.showcase .sc-art{position:relative;height:340px;display:grid;place-items:center}
+.showcase .sc-glow{position:absolute;width:300px;height:300px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,164,76,.28),rgba(223,240,233,.3) 45%,transparent 72%);
+  animation:scGlow 6s ease-in-out infinite}
+.showcase .sc-jar{position:relative;z-index:2;width:230px;height:290px;border-radius:26px;object-fit:cover;
+  box-shadow:0 30px 60px rgba(80,60,30,.22);border:7px solid #fff;animation:scFloat 5.5s ease-in-out infinite}
+.showcase .sc-mini{position:absolute;border-radius:18px;object-fit:cover;border:5px solid #fff;
+  box-shadow:var(--shadow);z-index:3}
+.showcase .sc-mini.m1{width:104px;height:104px;top:6px;right:54px;animation:scFloat 6.5s ease-in-out infinite}
+.showcase .sc-mini.m2{width:120px;height:150px;bottom:8px;left:34px;animation:scFloat 7.5s ease-in-out .6s infinite}
+@keyframes scFloat{0%,100%{transform:translateY(0) rotate(-1.6deg)}50%{transform:translateY(-18px) rotate(1.6deg)}}
+@keyframes scGlow{0%,100%{transform:scale(.94);opacity:.6}50%{transform:scale(1.1);opacity:1}}
+.showcase .sc-tx .k{font-size:13px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-2);font-weight:700}
+.showcase .sc-tx h2{font-family:var(--serif);font-size:clamp(28px,3.6vw,42px);margin:8px 0 14px;font-weight:600}
+.showcase .sc-tx p{color:var(--ink-soft);font-size:16px;max-width:440px;margin-bottom:22px}
+
+/* ---- Перехід у розділ послуг (стиль hiskin) ---- */
+#svcTrans{position:fixed;inset:0;z-index:9000;background:linear-gradient(135deg,#2b2622,#3a322a);
+  display:grid;place-items:center;transform:translateY(100%);pointer-events:none}
+#svcTrans.run{animation:svcRun 1.2s cubic-bezier(.76,0,.24,1) forwards}
+@keyframes svcRun{0%{transform:translateY(100%)}38%,58%{transform:translateY(0)}100%{transform:translateY(-100%)}}
+#svcTrans .st-tx{color:#fff;font-family:var(--serif);font-size:clamp(26px,6vw,62px);letter-spacing:.03em;
+  text-align:center;padding:0 24px;opacity:0}
+#svcTrans .st-tx span{display:block;font-family:var(--sans);font-size:13px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold-soft);margin-top:12px}
+#svcTrans.run .st-tx{animation:stTx 1.2s ease forwards}
+@keyframes stTx{0%,26%{opacity:0;transform:translateY(22px)}44%,56%{opacity:1;transform:none}78%,100%{opacity:0}}
+
+@media(prefers-reduced-motion:reduce){
+  #intro .in-mark,#intro .in-line,#intro .in-sub,#intro .in-skip{animation:none;opacity:1;transform:none;width:130px}
+  .reveal{opacity:1;transform:none;transition:none}
+  .showcase .sc-jar,.showcase .sc-mini,.showcase .sc-glow{animation:none}
+}
+@media(max-width:760px){
+  .showcase .wrap{grid-template-columns:1fr;gap:18px}
+  .showcase .sc-art{height:280px;order:-1}
+}

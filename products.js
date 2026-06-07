@@ -14,6 +14,9 @@ const CATEGORIES = [
   { id: "mask",       group: "care", name: "Маски",            icon: "🎭", desc: "Тканинні, нічні, глиняні, гідрогелеві" },
   { id: "sun",        group: "care", name: "Сонцезахист",      icon: "☀️", desc: "SPF-флюїди, сонцезахисні креми K-beauty" },
   { id: "eye",        group: "care", name: "Догляд за зоною очей", icon: "👁️", desc: "Креми та патчі під очі" },
+  { id: "body",       group: "care", name: "Догляд за тілом",      icon: "🤍", desc: "Лосьйони, креми та олії для тіла" },
+  { id: "hair",       group: "care", name: "Догляд за волоссям",   icon: "💆", desc: "Шампуні, сироватки, догляд за шкірою голови" },
+  { id: "foot",       group: "care", name: "Догляд за ногами",     icon: "🦶", desc: "Пілінги, маски та креми для ніг" },
 
   // --- Професійна косметологія (ін'єкційні / апаратні, тільки для фахівців) ---
   { id: "meso",       group: "pro",  name: "Мезотерапія",      icon: "💉", desc: "Мезококтейлі, PDRN, вітамінні комплекси" },
@@ -88,6 +91,24 @@ const PRODUCTS = [
     desc:"Преміальний антивіковий крем для зони очей з женьшенем.", tags:["антиейдж","женьшень","преміум"] },
   { id:61, name:"Collagen Hydrogel Eye Patch", brand:"Medi-Peel", group:"care", cat:"eye", vol:"60 шт", price:520,
     desc:"Гідрогелеві патчі з колагеном і пептидами проти набряків.", tags:["патчі","колаген","набряки"] },
+
+  /* ===================== ДОГЛЯД ЗА ТІЛОМ ===================== */
+  { id:200, name:"Ceramide Ato Concentrate Cream", brand:"Illiyoon", group:"care", cat:"body", vol:"200 мл", price:520, badge:"hit",
+    desc:"Поживний крем для обличчя й тіла з 3 церамідами. 100 годин зволоження, відновлює бар'єр.", tags:["цераміди","тіло","зволоження"] },
+  { id:201, name:"1025 Dokdo Lotion", brand:"Round Lab", group:"care", cat:"body", vol:"200 мл", price:560, badge:"new",
+    desc:"Легкий лосьйон для тіла з морською водою та потрійною гіалуроновою кислотою. Заспокоює та зволожує.", tags:["морська вода","тіло","гіалуронка"] },
+
+  /* ===================== ДОГЛЯД ЗА ВОЛОССЯМ ===================== */
+  { id:210, name:"Perfect Serum Original", brand:"Mise en Scène", group:"care", cat:"hair", vol:"80 мл", price:430, badge:"hit",
+    desc:"Культова сироватка-олія для волосся з 7 оліями (аргана, камелія). Гладкість, блиск, термозахист.", tags:["сироватка","аргана","блиск"] },
+  { id:211, name:"Rosemary Scalp Scaling Shampoo", brand:"Aromatica", group:"care", cat:"hair", vol:"400 мл", price:590, badge:"new",
+    desc:"Шампунь з розмарином для шкіри голови: скейлінг, зміцнення коренів, проти випадіння.", tags:["розмарин","шкіра голови","скейлінг"] },
+
+  /* ===================== ДОГЛЯД ЗА НОГАМИ ===================== */
+  { id:220, name:"Shiny Foot Super Peeling Liquid", brand:"TONYMOLY", group:"care", cat:"foot", vol:"1 пара", price:320, badge:"hit",
+    desc:"Пілінг-шкарпетки з AHA/BHA: за 4–6 днів відлущують огрубілу шкіру, ступні стають гладкими.", tags:["пілінг","ноги","шкарпетки"] },
+  { id:221, name:"Dry Essence Foot Pack", brand:"Petitfee", group:"care", cat:"foot", vol:"1 пара", price:180, badge:"new",
+    desc:"Зволожувальна маска-шкарпетки з алое, ши та сечовиною. М'якість і живлення для ступень.", tags:["маска","ноги","зволоження"] },
 
   /* ===================== МЕЗОТЕРАПІЯ ===================== */
   { id:100, name:"Rejuran Healer (PN)", brand:"Pharma Research", group:"pro", cat:"meso", vol:"2×1 мл", price:5200, badge:"hit",
