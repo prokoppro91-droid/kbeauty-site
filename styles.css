@@ -12,8 +12,8 @@
   --shadow-sm:0 4px 16px rgba(80,60,30,.08);
   --radius:18px; --radius-sm:12px;
   --maxw:1200px;
-  --serif:"Cormorant Garamond","Times New Roman",Georgia,serif;
-  --sans:"Inter","Segoe UI",system-ui,-apple-system,sans-serif;
+  --serif:"Fraunces","Cormorant Garamond",Georgia,serif;
+  --sans:"Jost","Inter","Segoe UI",system-ui,-apple-system,sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
@@ -175,7 +175,13 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 }
 .cat:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--gold-soft)}
 .cat.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,164,76,.25)}
-.cat .ic{font-size:30px}
+.cat .ic{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;
+  background:linear-gradient(135deg,var(--bg-2),#fff);border:1px solid var(--line);transition:.25s}
+.cat:hover .ic{border-color:var(--gold-soft);background:linear-gradient(135deg,#fff7ea,#fff)}
+.cat .ic svg{width:25px;height:25px;stroke:var(--gold-2);fill:none;stroke-width:1.6;
+  stroke-linecap:round;stroke-linejoin:round}
+.chip svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;margin-right:7px;vertical-align:-3px}
 .cat b{display:block;margin-top:10px;font-size:15px}
 .cat small{color:var(--ink-soft);font-size:12px;display:block;margin-top:3px;line-height:1.35}
 .cat .n{position:absolute;top:14px;right:14px;font-size:11px;color:var(--gold-2);font-weight:700;background:var(--bg-2);border-radius:999px;padding:2px 8px}

@@ -24,6 +24,29 @@ const cartCount = () => Object.values(state.cart).reduce((a,b)=>a+b,0);
 const cartTotal = () => Object.entries(state.cart)
   .reduce((s,[id,q])=>{const p=PRODUCTS.find(x=>x.id==id);return s+(p?p.price*q:0);},0);
 
+/* ---------- преміальні SVG-іконки категорій ---------- */
+const ICONS = {
+  cream:'<rect x="5.5" y="9" width="13" height="11" rx="3"/><path d="M8 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M9.5 14h5"/>',
+  serum:'<path d="M10 3h4"/><path d="M10.5 3v3.4L8.7 9.6A3 3 0 0 0 8 11.5V18a3 3 0 0 0 3 3h2a3 3 0 0 0 3-3v-6.5a3 3 0 0 0-.7-1.9L13.5 6.4V3"/><path d="M9 13.5h6"/>',
+  cleanser:'<circle cx="9" cy="13.5" r="4"/><circle cx="16" cy="9" r="2.6"/><circle cx="17.2" cy="16" r="1.6"/>',
+  toner:'<rect x="8" y="8" width="8" height="12" rx="2.5"/><path d="M10.5 8V5.5h3V8"/><path d="M12.2 14.4c1.6-1.4 3-1 3-1s.1 1.7-1.3 2.7"/>',
+  mask:'<path d="M7 5h10a1 1 0 0 1 1 1v6a6 6 0 0 1-12 0V6a1 1 0 0 1 1-1z"/><circle cx="9.6" cy="10.5" r="1"/><circle cx="14.4" cy="10.5" r="1"/><path d="M10 14.2c1.1.9 2.9.9 4 0"/>',
+  sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5 5l1.6 1.6M17.4 17.4 19 19M19 5l-1.6 1.6M6.6 17.4 5 19"/>',
+  eye:'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+  body:'<rect x="8" y="9" width="8" height="11" rx="2.6"/><path d="M11 9V6h3l1.4-1.4"/><path d="M11 6H9.2"/>',
+  hair:'<path d="M6 4c2 3 2 6.5 0 9.5S4 19.5 6 21"/><path d="M11 4c2 3 2 6.5 0 9.5s-2 6 0 7.5"/><path d="M16 4c2 3 2 6.5 0 9.5s-2 6 0 7.5"/>',
+  foot:'<path d="M9 3.5c-1.7 0-2.7 1.4-2.7 3.4 0 2 .7 3.8.7 6.1 0 2.2.5 4.5 3 4.5 1.9 0 2.4-1.6 2.6-3 .2-1.5.9-2.6 2.1-3.3 1.3-.8 2-2 2-3.6C18.7 5 16 3.4 13 3.6"/><circle cx="16.5" cy="6" r=".9"/><circle cx="18" cy="8.4" r=".9"/>',
+  meso:'<path d="M4 20l3.5-3.5"/><path d="M14 4l6 6"/><path d="M16.5 6.5l-9 9-1.6 3.6 3.6-1.6 9-9z"/><path d="M12.5 8.5l3 3"/>',
+  biorevi:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18.5 15.5l.6 1.8.6-1.8"/>',
+  filler:'<path d="M12 3s6 6.6 6 11a6 6 0 0 1-12 0c0-4.4 6-11 6-11z"/><path d="M9.6 14a2.4 2.4 0 0 0 2.4 2.4"/>',
+  toxin:'<path d="M13 2.5 4.5 14H11l-1 7.5L19.5 10H13z"/>',
+  collagen:'<path d="M12 4l6.1 3.5v7L12 18l-6.1-3.5v-7z"/><circle cx="12" cy="11" r="2"/><path d="M12 4.2v2.6M6.2 8l3.3 1.6M17.8 8l-3.3 1.6"/>',
+  threads:'<path d="M4 20 17 7"/><path d="M14.5 4.5l5 5"/><circle cx="6.3" cy="17.7" r="1.4"/>',
+  peel:'<path d="M10 3h4M11 3v5L6.6 16a2 2 0 0 0 1.8 3h7.2a2 2 0 0 0 1.8-3L13 8V3"/><path d="M8.6 15h6.8"/>',
+  device:'<rect x="3.5" y="7" width="17" height="10" rx="3"/><path d="M7.5 12h2.5M14 12h2.5"/><circle cx="12" cy="12" r="1.5"/>'
+};
+const iconFor = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]||ICONS.cream}</svg>`;
+
 /* ---------- рендер категорій ---------- */
 function renderCats(){
   const cats = CATEGORIES.filter(c=>c.group===state.group);
@@ -32,7 +55,7 @@ function renderCats(){
   $("#cats").innerHTML = cats.map(c=>`
     <button class="cat ${state.cat===c.id?'active':''} ${c.group==='pro'?'pro':''}" data-cat="${c.id}">
       <span class="n">${counts[c.id]||0}</span>
-      <div class="ic">${c.icon}</div>
+      <div class="ic">${iconFor(c.id)}</div>
       <b>${c.name}</b><small>${c.desc}</small>
     </button>`).join("");
   $$("#cats .cat").forEach(b=>b.onclick=()=>{
@@ -47,7 +70,7 @@ function renderChips(){
   const cats = CATEGORIES.filter(c=>c.group===state.group);
   $("#chips").innerHTML =
     `<button class="chip ${state.cat==='all'?'active':''}" data-cat="all">Усі</button>` +
-    cats.map(c=>`<button class="chip ${state.cat===c.id?'active':''}" data-cat="${c.id}">${c.icon} ${c.name}</button>`).join("");
+    cats.map(c=>`<button class="chip ${state.cat===c.id?'active':''}" data-cat="${c.id}">${iconFor(c.id)}${c.name}</button>`).join("");
   $$("#chips .chip").forEach(b=>b.onclick=()=>{
     state.cat=b.dataset.cat; renderCats(); renderChips(); renderGrid();
   });
