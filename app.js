@@ -70,7 +70,7 @@ function renderChips(){
   const cats = CATEGORIES.filter(c=>c.group===state.group);
   $("#chips").innerHTML =
     `<button class="chip ${state.cat==='all'?'active':''}" data-cat="all">Усі</button>` +
-    cats.map(c=>`<button class="chip ${state.cat===c.id?'active':''}" data-cat="${c.id}">${iconFor(c.id)}${c.name}</button>`).join("");
+    cats.map(c=>`<button class="chip ${state.cat===c.id?'active':''}" data-cat="${c.id}">${c.name}</button>`).join("");
   $$("#chips .chip").forEach(b=>b.onclick=()=>{
     state.cat=b.dataset.cat; renderCats(); renderChips(); renderGrid();
   });
