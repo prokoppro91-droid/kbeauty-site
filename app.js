@@ -47,13 +47,22 @@ const ICONS = {
 };
 const iconFor = id => `<img src="img/ic3d/${id}.png?v=3" alt="" loading="lazy" aria-hidden="true">`;
 
+/* колір картки під фон кожної іконки (м'які пастелі однакового відтінку) */
+const CARDCOLORS = {
+  cream:"#f8dee4", serum:"#fbdcc1", cleanser:"#d9ece2", toner:"#e6ecd9", mask:"#e8e1f1",
+  sun:"#fce6b6", eye:"#f8dbe1", body:"#f3e7d3", hair:"#dcebf8", foot:"#dcefe2",
+  meso:"#dbe9f5", biorevi:"#d3efe9", filler:"#e7dff1", toxin:"#e1e8f2", collagen:"#f8e6bf",
+  threads:"#ece7e1", peel:"#f4e0c2", device:"#e6eaef"
+};
+const cardColor = id => CARDCOLORS[id] || "#f3ece3";
+
 /* ---------- рендер категорій ---------- */
 function renderCats(){
   const cats = CATEGORIES.filter(c=>c.group===state.group);
   const counts = {};
   PRODUCTS.forEach(p=>{counts[p.cat]=(counts[p.cat]||0)+1;});
   $("#cats").innerHTML = cats.map(c=>`
-    <button class="cat ${state.cat===c.id?'active':''} ${c.group==='pro'?'pro':''}" data-cat="${c.id}">
+    <button class="cat ${state.cat===c.id?'active':''} ${c.group==='pro'?'pro':''}" data-cat="${c.id}" style="--cc:${cardColor(c.id)}">
       <span class="n">${counts[c.id]||0}</span>
       <div class="ic">${iconFor(c.id)}</div>
       <b>${c.name}</b><small>${c.desc}</small>
