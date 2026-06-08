@@ -58,6 +58,7 @@ const cardColor = id => CARDCOLORS[id] || "#f3ece3";
 
 /* ---------- рендер категорій ---------- */
 function renderCats(){
+  if(!$("#cats")) return;            // блок категорій прибрано — навігація через фільтри
   const cats = CATEGORIES.filter(c=>c.group===state.group);
   const counts = {};
   PRODUCTS.forEach(p=>{counts[p.cat]=(counts[p.cat]||0)+1;});
@@ -251,8 +252,8 @@ function setGroup(g){
   state.group=g; state.cat="all";
   if(enteringPro) playSvcTrans("Професійна косметологія","Інʼєкційна естетика · пілінги · апаратні методики");
   $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===g));
-  $("#secTitle").textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
-  $("#secDesc").textContent  = g==="care"
+  const st=$("#secTitle"); if(st) st.textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
+  const sd=$("#secDesc"); if(sd) sd.textContent = g==="care"
     ? "Корейські засоби для домашнього та салонного догляду — від очищення до антивікових кремів."
     : "Інʼєкційні препарати, біоревіталізанти, пілінги та розхідники. Відпуск — лише сертифікованим фахівцям.";
   renderCats(); renderChips(); renderGrid();
@@ -304,7 +305,7 @@ function init(){
   $("#scrim").onclick=()=>{closeDrawer();};
   $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal();};
   $("#orderBtn").onclick=checkout;
-  $("#heroBrowse").onclick=()=>document.getElementById("cats-sec").scrollIntoView({behavior:"smooth"});
+  $("#heroBrowse").onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   const scb=document.getElementById("scBtn"); if(scb) scb.onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();}});
 
