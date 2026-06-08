@@ -45,7 +45,7 @@ const ICONS = {
   peel:'<path d="M10 3h4M11 3v5L6.6 16a2 2 0 0 0 1.8 3h7.2a2 2 0 0 0 1.8-3L13 8V3"/><path d="M8.6 15h6.8"/>',
   device:'<rect x="3.5" y="7" width="17" height="10" rx="3"/><path d="M7.5 12h2.5M14 12h2.5"/><circle cx="12" cy="12" r="1.5"/>'
 };
-const iconFor = id => `<svg viewBox="0 0 24 24" aria-hidden="true">${ICONS[id]||ICONS.cream}</svg>`;
+const iconFor = id => `<img src="img/ic/${id}.png" alt="" loading="lazy" aria-hidden="true">`;
 
 /* ---------- рендер категорій ---------- */
 function renderCats(){
