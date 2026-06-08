@@ -62,10 +62,10 @@ function renderCats(){
   const counts = {};
   PRODUCTS.forEach(p=>{counts[p.cat]=(counts[p.cat]||0)+1;});
   $("#cats").innerHTML = cats.map(c=>`
-    <button class="cat ${state.cat===c.id?'active':''} ${c.group==='pro'?'pro':''}" data-cat="${c.id}" style="--cc:${cardColor(c.id)}">
+    <button class="cat ${state.cat===c.id?'active':''} ${c.group==='pro'?'pro':''}" data-cat="${c.id}"
+            style="background-image:url('img/ic3d/${c.id}.png?v=3')">
       <span class="n">${counts[c.id]||0}</span>
-      <div class="ic">${iconFor(c.id)}</div>
-      <b>${c.name}</b><small>${c.desc}</small>
+      <span class="cat-tx"><b>${c.name}</b><small>${c.desc}</small></span>
     </button>`).join("");
   $$("#cats .cat").forEach(b=>b.onclick=()=>{
     state.cat = state.cat===b.dataset.cat ? "all" : b.dataset.cat;
