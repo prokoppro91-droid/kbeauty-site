@@ -175,10 +175,11 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 }
 .cat:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:var(--gold-soft)}
 .cat.active{border-color:var(--gold);box-shadow:0 0 0 2px rgba(201,164,76,.25)}
-.cat .ic{height:50px;display:grid;place-items:center;transition:.25s}
-.cat .ic img{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 7px 12px rgba(120,90,40,.20))}
-.cat:hover .ic img{transform:translateY(-2px) scale(1.06)}
-.chip img{width:19px;height:19px;object-fit:contain;margin-right:7px;vertical-align:-5px}
+.cat .ic{width:66px;height:66px;border-radius:18px;display:grid;place-items:center;overflow:hidden;
+  background:#fff;border:1px solid var(--line);box-shadow:0 8px 20px rgba(120,90,40,.08);transition:.25s}
+.cat .ic img{width:100%;height:100%;object-fit:contain}
+.cat:hover .ic{transform:translateY(-3px);box-shadow:0 14px 28px rgba(120,90,40,.16);border-color:var(--gold-soft)}
+.chip img{width:22px;height:22px;object-fit:contain;border-radius:6px;margin-right:7px;vertical-align:-6px}
 .cat b{display:block;margin-top:10px;font-size:15px}
 .cat small{color:var(--ink-soft);font-size:12px;display:block;margin-top:3px;line-height:1.35}
 .cat .n{position:absolute;top:14px;right:14px;font-size:11px;color:var(--gold-2);font-weight:700;background:var(--bg-2);border-radius:999px;padding:2px 8px}
