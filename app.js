@@ -428,6 +428,74 @@ function quizResult(){
   };
 }
 
+/* =====================================================================
+   ПЕРЕВІРКА СУМІСНОСТІ АКТИВІВ — аналізує кошик (або обране) на конфлікти
+   ===================================================================== */
+const ACTIVES = [
+  {id:"retinoid", label:"Ретиноїди",        re:/ретин/i,                                          when:"pm"},
+  {id:"acid",     label:"Кислоти (AHA/BHA)", re:/кислот|\baha\b|\bbha\b|\btca\b|пілінг|джесснер|саліцил|гліко|молочн/i, when:"pm"},
+  {id:"vitc",     label:"Вітамін C",        re:/вітамін c|віт\. c|ферул|c[\s-]?23/i,              when:"am"},
+  {id:"niac",     label:"Ніацинамід",       re:/ніацинамід/i,                                     when:"any"},
+  {id:"pept",     label:"Пептиди",          re:/пептид|колаген/i,                                 when:"any"},
+  {id:"hydra",    label:"Гіалуронова к-та", re:/гіалурон/i,                                       when:"any"},
+  {id:"soothe",   label:"Заспокійливі",     re:/центел|заспок|пантенол|термальн/i,                when:"any"},
+];
+function activesOf(p){
+  const hay=(p.name+" "+(p.tags||[]).join(" ")+" "+(p.desc||"")).toLowerCase();
+  return ACTIVES.filter(a=>a.re.test(hay));
+}
+function analyzeCompat(list){
+  const present=new Set(); list.forEach(p=>activesOf(p).forEach(a=>present.add(a.id)));
+  const warns=[];
+  const has=id=>present.has(id);
+  if(has("retinoid")&&has("acid")) warns.push("Ретиноїди й кислоти разом сильно подразнюють — застосовуйте їх у різні вечори (через день).");
+  if(has("retinoid")&&has("vitc")) warns.push("Вітамін C — уранці, ретиноїд — увечері. Разом їхня ефективність знижується.");
+  if(has("acid")&&has("vitc"))     warns.push("Кислоти й вітамін C краще рознести: C зранку, кислоти ввечері.");
+  const strong=list.filter(p=>activesOf(p).some(a=>a.id==="retinoid"||a.id==="acid"));
+  if(strong.length>1) warns.push("У наборі кілька сильних активів — вводьте їх поступово, по одному раз на 1–2 тижні.");
+  // розклад am/pm
+  const am=[], pm=[];
+  list.forEach(p=>{
+    const acts=activesOf(p);
+    if(acts.some(a=>a.when==="pm")) pm.push(p);
+    else if(acts.some(a=>a.when==="am")) am.push(p);
+    else { am.push(p); pm.push(p); }
+  });
+  return {present:[...present], warns, am, pm, strong:strong.length};
+}
+function openCompat(){
+  let list=Object.keys(state.cart).map(id=>PRODUCTS.find(p=>p.id==id)).filter(Boolean);
+  let src="кошика";
+  if(!list.length){ list=state.fav.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean); src="обраного"; }
+  const m=$("#compatModal");
+  if(!list.length){
+    m.innerHTML=`<button class="close" data-cclose aria-label="Закрити">×</button>
+      <div class="rt-head"><span class="k">🧪 Сумісність активів</span><h2>Поки нема що перевіряти</h2>
+      <p>Додайте засоби в кошик або в ♥ обране — і я перевірю, чи добре поєднуються їхні активні інгредієнти, та складу безпечну схему ранок/вечір.</p></div>
+      <div class="rt-foot"><button class="btn primary" data-cclose>Зрозуміло</button></div>`;
+    m.querySelectorAll("[data-cclose]").forEach(b=>b.onclick=closeCompat);
+    $("#compatOverlay").classList.add("open"); return;
+  }
+  const {present,warns,am,pm}=analyzeCompat(list);
+  const lbl=id=>(ACTIVES.find(a=>a.id===id)||{}).label||id;
+  const row=p=>`<div class="cp-item"><span class="em">${emojiFor(p)}</span><div><b>${p.name}</b><small>${p.brand}</small></div>
+    <span class="cp-acts">${activesOf(p).map(a=>a.label).join(", ")||"базовий догляд"}</span></div>`;
+  m.innerHTML=`<button class="close" data-cclose aria-label="Закрити">×</button>
+    <div class="rt-head"><span class="k">🧪 Сумісність активів</span><h2>Аналіз вашого ${src}</h2>
+      <p>${present.length?`Активні інгредієнти: ${present.map(lbl).join(" · ")}`:"Сильних активів не виявлено — засоби м'які та добре поєднуються."}</p></div>
+    ${warns.length
+      ? `<div class="cp-warns">${warns.map(w=>`<div class="cp-warn"><span>⚠️</span><p>${w}</p></div>`).join("")}</div>`
+      : `<div class="cp-ok">✅ Чудово! Ваші засоби добре поєднуються — конфліктів активів немає.</div>`}
+    <div class="cp-sched">
+      <div class="cp-col am"><h4>☀️ Ранок</h4>${am.map(row).join("")||"<small>—</small>"}<div class="cp-tip">Завершуйте SPF</div></div>
+      <div class="cp-col pm"><h4>🌙 Вечір</h4>${pm.map(row).join("")||"<small>—</small>"}${present.includes("retinoid")&&present.includes("acid")?`<div class="cp-tip">Ретиноїд і кислоти — через вечір</div>`:""}</div>
+    </div>
+    <div class="rt-foot"><button class="btn primary" data-cclose>Готово</button></div>`;
+  m.querySelectorAll("[data-cclose]").forEach(b=>b.onclick=closeCompat);
+  $("#compatOverlay").classList.add("open");
+}
+function closeCompat(){$("#compatOverlay").classList.remove("open");}
+
 /* ---------- фільтрація + сортування ---------- */
 function currentList(){
   let list = PRODUCTS.filter(p=>p.group===state.group);
@@ -698,6 +766,10 @@ function init(){
   $$("[data-quiz]").forEach(el=>el.onclick=openQuiz);
   const qo=document.getElementById("quizOverlay"); if(qo) qo.onclick=e=>{if(e.target.id==="quizOverlay")closeQuiz();};
 
+  // сумісність активів
+  $$("[data-compat]").forEach(el=>el.onclick=openCompat);
+  const co=document.getElementById("compatOverlay"); if(co) co.onclick=e=>{if(e.target.id==="compatOverlay")closeCompat();};
+
   // обране + фільтр ціни
   const ft=document.getElementById("favToggle");
   if(ft) ft.onclick=()=>{ state.favOnly=!state.favOnly; updateFavUI(); renderGrid();
@@ -711,7 +783,7 @@ function init(){
   const bp=document.getElementById("bestPrev"); if(bp) bp.onclick=()=>bestScroll(-1);
   const bn=document.getElementById("bestNext"); if(bn) bn.onclick=()=>bestScroll(1);
 
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();closeQuiz();}});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();closeQuiz();closeCompat();}});
 
   // кнопка «догори»
   const toTop=document.getElementById("toTop");

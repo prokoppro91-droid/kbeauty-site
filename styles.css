@@ -774,6 +774,35 @@ footer .social a:hover{background:var(--gold-2)}
 .qz-profile span{font-size:12.5px;font-weight:600;background:var(--bg-2);color:var(--ink);padding:6px 12px;border-radius:999px}
 @media(max-width:480px){.qz-opts{grid-template-columns:1fr}.qz-q{font-size:22px}}
 
+/* ---------- сумісність активів ---------- */
+.cp-warns{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
+.cp-warn{display:flex;gap:10px;align-items:flex-start;background:#fff7ec;border:1px solid #f0dcb6;
+  border-radius:12px;padding:11px 14px}
+.cp-warn span{font-size:16px;flex:0 0 auto}
+.cp-warn p{font-size:13px;color:#7a5a1e;line-height:1.5}
+.cp-ok{background:var(--mint);border:1px solid #bfe3d2;border-radius:12px;padding:13px 16px;
+  font-size:14px;color:#2c5a48;font-weight:600;margin-bottom:16px}
+.cp-sched{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cp-col{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+.cp-col.pm{background:linear-gradient(180deg,#2b2622,#3a322a);border-color:#3a322a;color:#f3ead6}
+.cp-col h4{font-family:var(--serif);font-size:17px;margin-bottom:10px}
+.cp-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-top:1px solid var(--line)}
+.cp-col.pm .cp-item{border-color:rgba(255,255,255,.12)}
+.cp-item:first-of-type{border-top:none}
+.cp-item .em{font-size:22px;flex:0 0 auto}
+.cp-item b{font-size:12.5px;line-height:1.2;display:block}
+.cp-item small{font-size:11px;color:var(--ink-soft)}
+.cp-col.pm .cp-item small{color:rgba(243,234,214,.65)}
+.cp-acts{margin-left:auto;font-size:10.5px;font-weight:700;text-align:right;color:var(--gold-2);max-width:96px}
+.cp-col.pm .cp-acts{color:var(--gold-soft)}
+.cp-tip{margin-top:10px;font-size:11.5px;opacity:.85;font-style:italic}
+@media(max-width:560px){.cp-sched{grid-template-columns:1fr}.cp-acts{display:none}}
+
+/* кнопка перевірки в кошику */
+.dcompat{width:100%;height:46px;border-radius:12px;background:#fff;border:1px solid var(--gold);
+  color:var(--ink);font-weight:600;font-size:14px;margin-bottom:10px;transition:.2s}
+.dcompat:hover{background:var(--bg-2)}
+
 /* =====================================================================
    СТОРІНКА «ГАЙД ПО ДОГЛЯДУ»
    ===================================================================== */

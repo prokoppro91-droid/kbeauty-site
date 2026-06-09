@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=24">
+<link rel="stylesheet" href="styles.css?v=25">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -129,6 +129,7 @@
   </div>
   <div class="g-actions">
     <button class="brand-btn quiz-btn" data-quiz aria-label="Пройти підбір догляду">🔍 Підібрати догляд</button>
+    <button class="brand-btn" data-compat aria-label="Перевірити сумісність активів">🧪 Сумісність</button>
     <button class="brand-btn" id="brandBtn" aria-label="Відкрити каталог брендів">🏷️ Бренди <span>усі марки ▾</span></button>
     <button class="brand-btn routine-btn" id="routineBtn" aria-label="Зібрати рутину догляду">✨ Зібрати рутину</button>
     <a class="brand-btn guide-link" href="guide.html" aria-label="Відкрити гайд по догляду">📖 Гайд по догляду</a>
@@ -290,6 +291,9 @@
 <!-- вікно квізу «Розумний підбір» -->
 <div class="overlay quiz-overlay" id="quizOverlay"><div class="quiz-modal" id="quizModal"></div></div>
 
+<!-- вікно «Сумісність активів» -->
+<div class="overlay routine-overlay" id="compatOverlay"><div class="routine-modal" id="compatModal"></div></div>
+
 <!-- кошик -->
 <div class="overlay" id="scrim" style="z-index:105"></div>
 <aside class="drawer" id="drawer">
@@ -297,6 +301,7 @@
   <div class="ditems" id="ditems"></div>
   <div class="dfoot" id="dfoot">
     <div class="total"><span>Разом:</span><b id="dtotal">0 грн</b></div>
+    <button class="dcompat" data-compat>🧪 Перевірити сумісність активів</button>
     <button class="order" id="orderBtn">Оформити замовлення →</button>
     <p class="hint">Список скопіюється у буфер — надішліть його у Direct Instagram для підтвердження.</p>
   </div>
@@ -312,6 +317,6 @@
 <button class="to-top" id="toTop" aria-label="Догори" title="Догори">↑</button>
 
 <script src="products.js"></script>
-<script src="app.js?v=12"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>
