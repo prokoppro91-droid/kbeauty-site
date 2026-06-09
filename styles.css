@@ -383,8 +383,16 @@ footer a{color:#c8bda8;font-size:14px;transition:.2s}
 footer a:hover{color:#fff}
 footer .fdesc{font-size:14px;color:#b3a892;margin-top:14px;max-width:300px}
 footer .social{display:flex;gap:10px;margin-top:16px}
-footer .social a{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:18px}
-footer .social a:hover{background:var(--gold-2)}
+footer .social a{width:40px;height:40px;border-radius:10px;background:rgba(255,255,255,.07);display:grid;place-items:center;font-size:18px;color:#d9cfbd;transition:.2s}
+footer .social a:hover{background:var(--gold-2);color:#1c1a17}
+/* векторні логотипи брендів */
+.bi{display:inline-block;width:15px;height:15px;flex:0 0 auto}
+.bi.fill{fill:currentColor}
+.bi.line{fill:none;stroke:currentColor;stroke-width:1.9}
+.bi.line .dot{fill:currentColor;stroke:none}
+footer .social a .bi{width:20px;height:20px}
+footer .contacts li{display:flex;align-items:center;gap:7px;min-height:22px}
+footer .contacts .bi{vertical-align:-2px}
 .copy{border-top:1px solid rgba(255,255,255,.1);margin-top:34px;padding-top:20px;font-size:12px;color:#8f8674;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
 
 /* ---------- toast ---------- */
