@@ -181,4 +181,75 @@ const PRODUCTS = [
     desc:"Сироватки та насадки для процедури гідродермабразії.", tags:["гідропілінг","розхідники"], pro:true },
   { id:172, name:"Сироватка для мікронідлінгу (PN+HA)", brand:"DermaLab", group:"pro", cat:"device", vol:"10×5 мл", price:1600, badge:"new",
     desc:"Стерильна сироватка для фракційного мікронідлінгу та дермапену.", tags:["мікронідлінг","дермапен"], pro:true },
+
+  /* =====================================================================
+     СВІТОВІ ТОП-БРЕНДИ (Європа / преміум-дерматокосметика).
+     origin:"eu" — для фільтра «Бренди»; top:true — топ-10 світових брендів.
+     ===================================================================== */
+
+  /* 1. La Roche-Posay (Франція) */
+  { id:300, name:"Hyalu B5 Anti-Wrinkle Serum", brand:"La Roche-Posay", group:"care", cat:"serum", vol:"30 мл", price:1190, badge:"hit", origin:"eu", top:true,
+    desc:"Сироватка з двома типами гіалуронової кислоти та вітаміном B5 — зволоження, пружність, відновлення.", tags:["гіалуронка","B5","антиейдж"] },
+  { id:301, name:"Anthelios UVMune 400 SPF50+", brand:"La Roche-Posay", group:"care", cat:"sun", vol:"50 мл", price:790, origin:"eu", top:true,
+    desc:"Сонцезахист нового покоління проти ультрадовгих UVA. Невагома текстура, без білих слідів.", tags:["SPF50","UVA","флюїд"] },
+  { id:302, name:"Effaclar Duo+ M", brand:"La Roche-Posay", group:"care", cat:"cream", vol:"40 мл", price:640, origin:"eu", top:true,
+    desc:"Корегувальний догляд проти недосконалостей і постакне для жирної шкіри.", tags:["акне","себорегуляція"] },
+
+  /* 2. Vichy (Франція) */
+  { id:310, name:"Minéral 89 Hyaluronic Booster", brand:"Vichy", group:"care", cat:"serum", vol:"50 мл", price:790, badge:"hit", origin:"eu", top:true,
+    desc:"Зволожувальний бустер з гіалуроновою кислотою та вулканічною водою Vichy. Зміцнює бар'єр.", tags:["гіалуронка","бустер","зволоження"] },
+  { id:311, name:"Liftactiv Collagen Specialist", brand:"Vichy", group:"care", cat:"cream", vol:"50 мл", price:1090, origin:"eu", top:true,
+    desc:"Антивіковий крем для стимуляції колагену — щільність, пружність, рівний тон.", tags:["колаген","антиейдж"] },
+
+  /* 3. CeraVe (США / L'Oréal) */
+  { id:320, name:"Hydrating Cleanser", brand:"CeraVe", group:"care", cat:"cleanser", vol:"236 мл", price:450, badge:"hit", origin:"eu", top:true,
+    desc:"М'який очисник з 3 церамідами та гіалуроновою кислотою. Не порушує бар'єр шкіри.", tags:["цераміди","очищення","бар'єр"] },
+  { id:321, name:"Moisturising Cream", brand:"CeraVe", group:"care", cat:"cream", vol:"340 мл", price:620, origin:"eu", top:true,
+    desc:"Насичений крем для обличчя й тіла з церамідами та технологією MVE. 24 год зволоження.", tags:["цераміди","зволоження"] },
+  { id:322, name:"SA Smoothing Cream", brand:"CeraVe", group:"care", cat:"body", vol:"340 мл", price:560, origin:"eu", top:true,
+    desc:"Розгладжувальний крем для тіла з саліциловою кислотою проти шорсткості та кератозу.", tags:["BHA","тіло","розгладження"] },
+
+  /* 4. Bioderma (Франція) */
+  { id:330, name:"Sensibio H2O Micellar Water", brand:"Bioderma", group:"care", cat:"cleanser", vol:"500 мл", price:520, badge:"hit", origin:"eu", top:true,
+    desc:"Культова міцелярна вода для делікатного зняття макіяжу та очищення чутливої шкіри.", tags:["міцелярна","демакіяж","чутлива"] },
+  { id:331, name:"Hydrabio Tonique", brand:"Bioderma", group:"care", cat:"toner", vol:"250 мл", price:480, origin:"eu", top:true,
+    desc:"Зволожувальний тонік для зневодненої шкіри — комфорт, сяйво, підготовка до догляду.", tags:["зволоження","тонік"] },
+
+  /* 5. Avène (Франція) */
+  { id:340, name:"Thermal Spring Water", brand:"Avène", group:"care", cat:"toner", vol:"300 мл", price:420, origin:"eu", top:true,
+    desc:"Термальна вода Avène — заспокоює, знімає подразнення та почервоніння чутливої шкіри.", tags:["термальна вода","заспокоєння"] },
+  { id:341, name:"Cleanance Sunscreen SPF50+", brand:"Avène", group:"care", cat:"sun", vol:"50 мл", price:620, badge:"new", origin:"eu", top:true,
+    desc:"Матувальний сонцезахист для жирної та проблемної шкіри. Некомедогенний.", tags:["SPF50","матовий","акне"] },
+
+  /* 6. SkinCeuticals (США) */
+  { id:350, name:"C E Ferulic", brand:"SkinCeuticals", group:"care", cat:"serum", vol:"30 мл", price:4600, badge:"hit", origin:"eu", top:true,
+    desc:"Еталонна антиоксидантна сироватка: 15% віт. C + віт. E + ферулова кислота. Захист і сяйво.", tags:["вітамін C","антиоксидант","преміум"] },
+  { id:351, name:"Phyto Corrective Mask", brand:"SkinCeuticals", group:"care", cat:"mask", vol:"70 мл", price:1900, origin:"eu", top:true,
+    desc:"Заспокійлива гель-маска з рослинними екстрактами для зневодненої та реактивної шкіри.", tags:["маска","заспокоєння"] },
+
+  /* 7. Estée Lauder (США) */
+  { id:360, name:"Advanced Night Repair Serum", brand:"Estée Lauder", group:"care", cat:"serum", vol:"50 мл", price:3200, badge:"hit", origin:"eu", top:true,
+    desc:"Легендарна нічна сироватка-антиоксидант для відновлення, сяйва та молодості шкіри.", tags:["антиейдж","нічна","сяйво"] },
+  { id:361, name:"Advanced Night Repair Eye", brand:"Estée Lauder", group:"care", cat:"eye", vol:"15 мл", price:2600, origin:"eu", top:true,
+    desc:"Відновлювальний догляд для зони очей: зменшує ознаки втоми, набряки та зморшки.", tags:["очі","антиейдж"] },
+
+  /* 8. Clarins (Франція) */
+  { id:370, name:"Double Serum", brand:"Clarins", group:"care", cat:"serum", vol:"50 мл", price:2900, badge:"hit", origin:"eu", top:true,
+    desc:"Подвійна антивікова сироватка (водна + олійна фази) з 21 рослинним екстрактом.", tags:["антиейдж","сироватка","преміум"] },
+  { id:371, name:"Total Eye Lift", brand:"Clarins", group:"care", cat:"eye", vol:"15 мл", price:2300, origin:"eu", top:true,
+    desc:"Ліфтинг-догляд для очей: розгладжує зморшки, зменшує набряки й темні кола.", tags:["очі","ліфтинг"] },
+  { id:372, name:"Tonic Body Treatment Oil", brand:"Clarins", group:"care", cat:"body", vol:"100 мл", price:1500, origin:"eu", top:true,
+    desc:"Тонізувальна олія для тіла з розмарином і м'ятою — пружність і еластичність шкіри.", tags:["олія","тіло","пружність"] },
+
+  /* 9. Caudalíe (Франція) */
+  { id:380, name:"Vinoperfect Radiance Serum", brand:"Caudalíe", group:"care", cat:"serum", vol:"30 мл", price:1490, badge:"new", origin:"eu", top:true,
+    desc:"Сироватка сяйва проти пігментних плям на основі винного ресвератролу та ніацинаміду.", tags:["сяйво","пігментація","ресвератрол"] },
+  { id:381, name:"Beauty Elixir", brand:"Caudalíe", group:"care", cat:"toner", vol:"100 мл", price:1100, origin:"eu", top:true,
+    desc:"Тонік-еліксир для свіжості, звуження пор і миттєвого сяйва. Освіжає протягом дня.", tags:["тонік","сяйво","пори"] },
+
+  /* 10. Eucerin (Німеччина / Beiersdorf) */
+  { id:390, name:"Hyaluron-Filler Day SPF15", brand:"Eucerin", group:"care", cat:"cream", vol:"50 мл", price:820, origin:"eu", top:true,
+    desc:"Денний антивіковий крем з гіалуроновою кислотою проти зморшок + захист SPF15.", tags:["гіалуронка","антиейдж","SPF"] },
+  { id:391, name:"Anti-Pigment Serum", brand:"Eucerin", group:"care", cat:"serum", vol:"30 мл", price:980, badge:"new", origin:"eu", top:true,
+    desc:"Сироватка проти пігментації з Thiamidol® — вирівнює тон і запобігає появі плям.", tags:["пігментація","тон","Thiamidol"] },
 ];

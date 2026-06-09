@@ -24,7 +24,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=17">
+<link rel="stylesheet" href="styles.css?v=18">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -83,17 +83,17 @@
 
 <!-- hero -->
 <section class="hero"><div class="wrap">
-  <div>
-    <span class="flag">🇰🇷 K-Beauty · Korea</span>
-    <h1>Корейська <em>професійна</em> косметика та косметологія</h1>
-    <p>Повний каталог засобів корейського ринку — від домашнього догляду до інʼєкційної естетики. Оригінал, актуальні новинки, чесний підбір.</p>
+  <div class="htext">
+    <span class="flag">🌍 K-Beauty + Європа · Преміум</span>
+    <h1><em>Професійна</em> косметика та косметологія світового рівня</h1>
+    <p>Корея та найкращі європейські марки — від домашнього догляду до інʼєкційної естетики. Оригінал, актуальні новинки, чесний підбір косметолога.</p>
     <div class="cta">
       <button class="btn primary" id="heroBrowse">Перейти до каталогу →</button>
       <a class="btn ghost" href="https://www.instagram.com/face_expert_anna" target="_blank">Консультація косметолога</a>
     </div>
     <div class="stats">
-      <div><b>50+</b><span>позицій у каталозі</span></div>
-      <div><b>25+</b><span>корейських брендів</span></div>
+      <div><b>75+</b><span>позицій у каталозі</span></div>
+      <div><b>35+</b><span>світових брендів</span></div>
       <div><b>14</b><span>категорій</span></div>
     </div>
   </div>
@@ -109,18 +109,24 @@
 
 <!-- USP / гарантії -->
 <div class="usp"><div class="wrap">
-  <div class="usp-i"><span class="ic">🇰🇷</span><div><b>Оригінал з Кореї</b><small>напряму, без підробок</small></div></div>
+  <div class="usp-i"><span class="ic">🌍</span><div><b>Оригінал · Корея + Європа</b><small>напряму, без підробок</small></div></div>
   <div class="usp-i"><span class="ic">🚚</span><div><b>Нова Пошта 1–2 дні</b><small>доставка по Україні</small></div></div>
   <div class="usp-i"><span class="ic">👩‍⚕️</span><div><b>Підбір косметолога</b><small>безкоштовна консультація</small></div></div>
   <div class="usp-i"><span class="ic">💳</span><div><b>Оплата при отриманні</b><small>наложеним платежем</small></div></div>
 </div></div>
 
-<!-- group toggle -->
+<!-- рухомий рядок брендів -->
+<div class="marquee" aria-label="Бренди">
+  <div class="mq-track" id="brandMarquee"></div>
+</div>
+
+<!-- group toggle + бренди -->
 <section class="groups"><div class="wrap">
   <div class="gt" id="gt">
     <button data-group="care" class="active">🧴 Косметика для догляду</button>
     <button data-group="pro">💉 Професійна косметологія</button>
   </div>
+  <button class="brand-btn" id="brandBtn" aria-label="Відкрити каталог брендів">🏷️ Бренди <span>усі марки ▾</span></button>
 </div></section>
 
 
@@ -130,6 +136,7 @@
     <span class="ic">⚕️</span>
     <div><b>Професійні засоби.</b> Інʼєкційні препарати, токсини та пілінги відпускаються виключно сертифікованим лікарям-косметологам і не призначені для самостійного застосування. Ціни орієнтовні.</div>
   </div>
+  <div class="brand-bar" id="brandBar" style="display:none"></div>
   <div class="toolbar">
     <div class="chips" id="chips"></div>
     <div class="sort">
@@ -235,6 +242,9 @@
 <!-- модалка товару -->
 <div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
 
+<!-- вікно «Бренди» -->
+<div class="overlay brands-overlay" id="brandsOverlay"><div class="brands-modal" id="brandsModal"></div></div>
+
 <!-- кошик -->
 <div class="overlay" id="scrim" style="z-index:105"></div>
 <aside class="drawer" id="drawer">
@@ -257,6 +267,6 @@
 <button class="to-top" id="toTop" aria-label="Догори" title="Догори">↑</button>
 
 <script src="products.js"></script>
-<script src="app.js?v=7"></script>
+<script src="app.js?v=8"></script>
 </body>
 </html>

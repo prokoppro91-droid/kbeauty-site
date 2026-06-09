@@ -11,10 +11,12 @@ const ORDER_TG = "https://t.me/kbeauty_profi";
 const state = {
   group: "care",          // care | pro
   cat: "all",             // активна категорія
+  brand: "all",           // активний бренд (фільтр через вікно «Бренди»)
   q: "",                  // пошук
   sort: "pop",            // pop | price-asc | price-desc | new
   cart: JSON.parse(localStorage.getItem("kb_cart") || "{}"),
 };
+const originOf = p => p.origin || "kr";   // kr (Корея) | eu (Європа/світові)
 
 /* ---------- утиліти ---------- */
 const catName = id => (CATEGORIES.find(c=>c.id===id)||{}).name || "";
@@ -96,10 +98,81 @@ function renderChips(){
   });
 }
 
+/* ---------- БРЕНДИ (вікно-перемикач + фільтр) ---------- */
+function brandsByOrigin(origin){
+  const map={};
+  PRODUCTS.forEach(p=>{ if(originOf(p)===origin){ map[p.brand]=(map[p.brand]||0)+1; } });
+  return Object.entries(map).sort((a,b)=>b[1]-a[1]); // [ [brand,count], ... ]
+}
+function openBrands(){
+  const eu=brandsByOrigin("eu"), kr=brandsByOrigin("kr");
+  const chip=([b,c])=>`<button class="brand-chip ${state.brand===b?'active':''}" data-brand="${b}">
+      <span class="bc-mono">${b.trim()[0]}</span><span class="bc-n">${b}</span><span class="bc-c">${c}</span></button>`;
+  $("#brandsModal").innerHTML=`
+    <button class="close" data-bclose aria-label="Закрити">×</button>
+    <div class="bm-head"><span class="k">Каталог брендів</span>
+      <h2>Оберіть бренд</h2>
+      <p>Корейська та європейська професійна косметика — топові світові марки в одному каталозі.</p></div>
+    <div class="bm-body">
+      <div class="bm-sec"><h4>🌍 Світові топ-бренди</h4><div class="brand-wrap">${eu.map(chip).join("")}</div></div>
+      <div class="bm-sec"><h4>🇰🇷 Корейські бренди</h4><div class="brand-wrap">${kr.map(chip).join("")}</div></div>
+    </div>
+    <div class="bm-foot"><button class="btn ghost" data-brand="all">Показати всі бренди</button></div>`;
+  $$("#brandsModal [data-brand]").forEach(b=>b.onclick=()=>selectBrand(b.dataset.brand));
+  $("#brandsModal [data-bclose]").onclick=closeBrands;
+  $("#brandsOverlay").classList.add("open");
+}
+function closeBrands(){$("#brandsOverlay").classList.remove("open");}
+function selectBrand(brand){
+  state.brand=brand;
+  if(brand!=="all"){
+    const p=PRODUCTS.find(x=>x.brand===brand);
+    if(p && p.group!==state.group){
+      state.group=p.group;
+      $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===p.group));
+    }
+  }
+  state.cat="all";
+  renderChips(); renderGrid(); renderBrandBar();
+  closeBrands();
+  document.getElementById("catalog").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderBrandBar(){
+  const bar=$("#brandBar"); if(!bar) return;
+  if(state.brand==="all"){ bar.innerHTML=""; bar.style.display="none"; return; }
+  bar.style.display="flex";
+  bar.innerHTML=`<span class="bb-lbl">Бренд:</span>
+    <span class="bb-tag">${state.brand}<button data-brandclear aria-label="Скинути бренд">×</button></span>`;
+  bar.querySelector("[data-brandclear]").onclick=()=>selectBrand("all");
+}
+/* рухомий рядок брендів (marquee) — клік фільтрує */
+function buildMarquee(){
+  const row=$("#brandMarquee"); if(!row) return;
+  const featured=["La Roche-Posay","Estée Lauder","COSRX","Vichy","Beauty of Joseon","CeraVe",
+    "Clarins","Laneige","SkinCeuticals","Anua","Bioderma","SKIN1004","Caudalíe","Avène","Eucerin","Medytox"];
+  const seq=[...featured,...featured];
+  row.innerHTML=seq.map(b=>`<button class="mq-item" data-brand="${b}">${b}</button>`).join("");
+  $$("#brandMarquee .mq-item").forEach(b=>b.onclick=()=>selectBrand(b.dataset.brand));
+}
+/* анімація «політ у кошик» */
+function flyToCart(srcEl){
+  const cart=$("#cartBtn"); if(!srcEl||!cart) return;
+  const s=srcEl.getBoundingClientRect(), t=cart.getBoundingClientRect();
+  const dot=document.createElement("span"); dot.className="fly-dot";
+  dot.style.left=(s.left+s.width/2)+"px"; dot.style.top=(s.top+s.height/2)+"px";
+  document.body.appendChild(dot);
+  requestAnimationFrame(()=>{
+    dot.style.transform=`translate(${t.left+t.width/2-(s.left+s.width/2)}px,${t.top+t.height/2-(s.top+s.height/2)}px) scale(.3)`;
+    dot.style.opacity="0.2";
+  });
+  setTimeout(()=>{dot.remove(); cart.classList.add("bump"); setTimeout(()=>cart.classList.remove("bump"),360);},520);
+}
+
 /* ---------- фільтрація + сортування ---------- */
 function currentList(){
   let list = PRODUCTS.filter(p=>p.group===state.group);
   if(state.cat!=="all") list = list.filter(p=>p.cat===state.cat);
+  if(state.brand!=="all") list = list.filter(p=>p.brand===state.brand);
   if(state.q){
     const q = state.q.toLowerCase();
     list = list.filter(p =>
@@ -151,13 +224,15 @@ function renderGrid(){
         <div class="foot">
           <div class="price">${UAH(p.price)} <span class="cur">грн</span>
             ${p.old?`<span class="old">${UAH(p.old)}</span><span class="off">−${discPct(p)}%</span>`:""}</div>
-          <button class="add ${inCart?'in':''}" data-add="${p.id}" title="Додати в кошик">${inCart?'✓':'+'}</button>
+          <button class="add ${inCart?'in':''}" data-add="${p.id}" aria-label="${inCart?'Прибрати з кошика':'Додати в кошик'}" title="${inCart?'У кошику — натисніть, щоб прибрати':'Додати в кошик'}">${inCart?'✓':'+'}</button>
         </div>
       </div>
     </article>`;
   }).join("");
 
-  $$("#grid [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();addToCart(+b.dataset.add);});
+  $$("#grid [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();
+    const id=+b.dataset.add, adding=!state.cart[id];
+    toggleCart(id); if(adding) flyToCart(b);});
   $$("#grid [data-open]").forEach(b=>b.onclick=()=>openModal(+b.dataset.open));
 }
 
@@ -167,6 +242,16 @@ function addToCart(id){
   updateCartUI(); renderGrid();
   const p=PRODUCTS.find(x=>x.id===id);
   toast(`✓ «${p.name}» додано в кошик`);
+}
+/* перемикач на картці: якщо вже в кошику → прибрати (повертає «+»), інакше → додати */
+function toggleCart(id){
+  if(state.cart[id]){
+    const p=PRODUCTS.find(x=>x.id===id);
+    removeFromCart(id);
+    if(p) toast(`✕ «${p.name}» прибрано з кошика`);
+  } else {
+    addToCart(id);
+  }
 }
 function removeFromCart(id){delete state.cart[id];saveCart();updateCartUI();renderGrid();renderDrawer();}
 function setQty(id,d){
@@ -253,7 +338,7 @@ function openModal(id){
         <div class="mprice">${UAH(p.price)} грн
           ${p.old?`<span class="old" style="font-size:16px;color:#b9aa92;text-decoration:line-through">${UAH(p.old)}</span><span class="off">−${discPct(p)}%</span>`:""}</div>
         <ul class="mtrust">
-          <li><span class="ck">✓</span><b>100% оригінал</b>&nbsp;— напряму з корейського ринку</li>
+          <li><span class="ck">✓</span><b>100% оригінал</b>&nbsp;— ${originOf(p)==="eu"?"офіційний імпорт із Європи":"напряму з корейського ринку"}</li>
           <li><span class="ck">✓</span>Доставка&nbsp;<b>Новою Поштою</b>&nbsp;по Україні, 1–2 дні</li>
           <li><span class="ck">✓</span>${p.pro?"Відпуск і консультація сертифікованим фахівцям":"Оплата при отриманні або підбір косметолога"}</li>
         </ul>
@@ -269,7 +354,7 @@ function closeModal(){$("#overlay").classList.remove("open");}
 /* ---------- розділ (group) ---------- */
 function setGroup(g){
   const enteringPro = (g==="pro" && state.group!=="pro");
-  state.group=g; state.cat="all";
+  state.group=g; state.cat="all"; state.brand="all"; renderBrandBar();
   if(enteringPro) playSvcTrans("Професійна косметологія","Інʼєкційна естетика · пілінги · апаратні методики");
   $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===g));
   const st=$("#secTitle"); if(st) st.textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
@@ -327,7 +412,13 @@ function init(){
   $("#orderBtn").onclick=checkout;
   $("#heroBrowse").onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   const scb=document.getElementById("scBtn"); if(scb) scb.onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();}});
+
+  // бренди
+  const bb=document.getElementById("brandBtn"); if(bb) bb.onclick=openBrands;
+  const bo=document.getElementById("brandsOverlay"); if(bo) bo.onclick=e=>{if(e.target.id==="brandsOverlay")closeBrands();};
+  buildMarquee(); renderBrandBar();
+
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();}});
 
   // кнопка «догори»
   const toTop=document.getElementById("toTop");

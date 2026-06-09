@@ -540,3 +540,82 @@ footer .social a:hover{background:var(--gold-2)}
 .to-top:hover{filter:brightness(1.06);transform:translateY(-2px)}
 @media(max-width:620px){.to-top{right:14px;bottom:14px;width:42px;height:42px}}
 @media(prefers-reduced-motion:reduce){.to-top{transition:opacity .2s}}
+
+/* ---------- рухомий рядок брендів (marquee) ---------- */
+.marquee{overflow:hidden;background:linear-gradient(90deg,var(--bg-2),#fff,var(--bg-2));
+  border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+          mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mq-track{display:inline-flex;gap:10px;white-space:nowrap;will-change:transform;
+  animation:mqScroll 38s linear infinite}
+.marquee:hover .mq-track{animation-play-state:paused}
+@keyframes mqScroll{to{transform:translateX(-50%)}}
+.mq-item{flex:0 0 auto;font-family:var(--serif);font-size:16px;font-weight:600;letter-spacing:.02em;
+  color:var(--ink-soft);padding:6px 18px;border-radius:999px;border:1px solid transparent;transition:.2s}
+.mq-item:hover{color:var(--gold-2);border-color:var(--gold-soft);background:#fff}
+@media(prefers-reduced-motion:reduce){.mq-track{animation:none;flex-wrap:wrap;white-space:normal}}
+
+/* ---------- кнопка «Бренди» + панель ---------- */
+.groups .wrap{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
+.brand-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;
+  background:#fff;border:1px solid var(--gold-soft);color:var(--ink);font-weight:600;font-size:15px;
+  box-shadow:var(--shadow-sm);transition:.2s}
+.brand-btn span{color:var(--gold-2);font-size:13px;font-weight:600}
+.brand-btn:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow)}
+@media(max-width:560px){.brand-btn{width:100%;justify-content:center}}
+
+.brand-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.brand-bar .bb-lbl{font-size:13px;color:var(--ink-soft)}
+.brand-bar .bb-tag{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;
+  font-weight:600;font-size:13.5px;padding:6px 8px 6px 14px;border-radius:999px}
+.brand-bar .bb-tag button{width:20px;height:20px;border-radius:999px;background:rgba(255,255,255,.2);
+  color:#fff;font-size:14px;display:grid;place-items:center;line-height:1}
+.brand-bar .bb-tag button:hover{background:var(--gold)}
+
+.brands-modal{background:#fff;border-radius:24px;max-width:720px;width:100%;max-height:88vh;overflow:auto;
+  box-shadow:var(--shadow);position:relative;padding:34px 30px 26px}
+.brands-modal .close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:999px;
+  background:var(--bg-2);font-size:22px;display:grid;place-items:center;z-index:2}
+.brands-modal .close:hover{background:var(--gold-soft)}
+.bm-head{text-align:center;margin-bottom:22px}
+.bm-head .k{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-2);font-weight:700}
+.bm-head h2{font-family:var(--serif);font-size:30px;margin:6px 0 6px}
+.bm-head p{font-size:14px;color:var(--ink-soft);max-width:460px;margin:0 auto}
+.bm-sec{margin-bottom:18px}
+.bm-sec h4{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft);margin-bottom:10px}
+.brand-wrap{display:flex;flex-wrap:wrap;gap:9px}
+.brand-chip{display:inline-flex;align-items:center;gap:9px;padding:8px 14px 8px 8px;border-radius:999px;
+  background:var(--bg);border:1px solid var(--line);transition:.18s;font-weight:600;font-size:14px;color:var(--ink)}
+.brand-chip:hover{border-color:var(--gold);background:#fff;transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+.brand-chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.brand-chip .bc-mono{width:28px;height:28px;border-radius:50%;flex:0 0 28px;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:700;font-size:15px;color:#fff;
+  background:linear-gradient(135deg,var(--gold),var(--gold-2))}
+.brand-chip .bc-c{font-size:12px;color:var(--gold-2);font-weight:700;background:var(--bg-2);
+  padding:1px 8px;border-radius:999px}
+.brand-chip.active .bc-c{color:#1c1a17;background:var(--gold-soft)}
+.bm-foot{text-align:center;margin-top:8px}
+.bm-foot .btn{height:46px}
+
+/* ---------- політ у кошик + bump ---------- */
+.fly-dot{position:fixed;z-index:200;width:18px;height:18px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 35% 30%,#fff,var(--gold) 60%,var(--gold-2));
+  box-shadow:0 4px 14px rgba(201,164,76,.5);transition:transform .5s cubic-bezier(.5,-0.2,.3,1),opacity .5s ease}
+.cart-btn.bump{animation:cartBump .36s ease}
+@keyframes cartBump{30%{transform:scale(1.16)}60%{transform:scale(.94)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){.fly-dot{display:none}.cart-btn.bump{animation:none}}
+
+/* ---------- кінетичний вхід героя ---------- */
+.htext>*{opacity:0;animation:heroUp .7s cubic-bezier(.2,.7,.2,1) forwards}
+.htext .flag{animation-delay:.05s}
+.htext h1{animation-delay:.16s}
+.htext p{animation-delay:.30s}
+.htext .cta{animation-delay:.44s}
+.htext .stats{animation-delay:.58s}
+@keyframes heroUp{from{opacity:0;transform:translateY(16px);filter:blur(4px)}to{opacity:1;transform:none;filter:none}}
+@media(prefers-reduced-motion:reduce){.htext>*{opacity:1;animation:none}}
+
+/* преміальний фолбек для карток без фото (нові світові бренди) */
+.card .thumb.noimg{background:
+  radial-gradient(120% 90% at 50% 0%,#fff 0%,transparent 60%),
+  linear-gradient(135deg,var(--powder),var(--mint))}
