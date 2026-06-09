@@ -282,6 +282,126 @@ function openRoutine(){
 }
 function closeRoutine(){$("#routineOverlay").classList.remove("open");}
 
+/* =====================================================================
+   КВІЗ «Розумний підбір догляду» — персональна рутина за відповідями
+   ===================================================================== */
+const QUIZ = [
+  {key:"type", q:"Який у вас тип шкіри?", sub:"Оберіть найближче відчуття протягом дня",
+   opts:[{v:"dry",l:"Суха",i:"🏜️"},{v:"oily",l:"Жирна",i:"💧"},{v:"combo",l:"Комбінована",i:"🌗"},
+         {v:"normal",l:"Нормальна",i:"🤍"},{v:"sensitive",l:"Чутлива",i:"🌸"}]},
+  {key:"goal", q:"Головна мета догляду?", sub:"На чому хочете зосередитись",
+   opts:[{v:"hydra",l:"Зволоження",i:"💧"},{v:"aging",l:"Антиейдж",i:"⏳"},{v:"acne",l:"Акне і жирність",i:"🌿"},
+         {v:"tone",l:"Рівний тон і сяйво",i:"✨"},{v:"calm",l:"Заспокоєння",i:"🤍"}]},
+  {key:"sens", q:"Чи реагує шкіра подразненням на нові засоби?", sub:"Почервоніння, поколювання, лущення",
+   opts:[{v:"high",l:"Так, часто",i:"⚠️"},{v:"mid",l:"Інколи",i:"😐"},{v:"low",l:"Майже ніколи",i:"👍"}]},
+  {key:"exp", q:"Ваш досвід із активами?", sub:"Ретинол, кислоти (AHA/BHA), вітамін C",
+   opts:[{v:"new",l:"Новачок",i:"🌱"},{v:"some",l:"Трохи маю",i:"📘"},{v:"pro",l:"Досвідчена шкіра",i:"🔬"}]},
+  {key:"budget", q:"Орієнтовний бюджет на один засіб?", sub:"Підберемо в межах комфорту",
+   opts:[{v:"low",l:"Економний",i:"💸"},{v:"mid",l:"Середній",i:"💳"},{v:"high",l:"Преміум",i:"💎"}]},
+];
+const quiz = {step:0, answers:{}};
+const STRONG_RE = /ретин|кислот|\baha\b|\bbha\b|\btca\b|пілінг|джесснер/i;
+
+function openQuiz(){ quiz.step=0; quiz.answers={}; renderQuiz(); $("#quizOverlay").classList.add("open"); }
+function closeQuiz(){ $("#quizOverlay").classList.remove("open"); }
+function renderQuiz(){
+  const total=QUIZ.length, i=quiz.step, Q=QUIZ[i], cur=quiz.answers[Q.key];
+  $("#quizModal").innerHTML=`
+    <button class="close" data-qclose aria-label="Закрити">×</button>
+    <div class="qz-prog"><span style="width:${Math.round((i)/total*100)}%"></span></div>
+    <div class="qz-step">Питання ${i+1} з ${total}</div>
+    <h2 class="qz-q">${Q.q}</h2>
+    <p class="qz-sub">${Q.sub}</p>
+    <div class="qz-opts">${Q.opts.map(o=>`
+      <button class="qz-opt ${cur===o.v?'sel':''}" data-v="${o.v}"><span class="qi">${o.i}</span><b>${o.l}</b></button>`).join("")}</div>
+    <div class="qz-nav">
+      ${i>0?`<button class="btn ghost" data-qback>← Назад</button>`:`<span></span>`}
+      <span class="qz-dots">${QUIZ.map((_,k)=>`<i class="${k===i?'on':''}"></i>`).join("")}</span>
+    </div>`;
+  $("#quizModal [data-qclose]").onclick=closeQuiz;
+  const back=$("#quizModal [data-qback]"); if(back) back.onclick=()=>{quiz.step--;renderQuiz();};
+  $$("#quizModal .qz-opt").forEach(b=>b.onclick=()=>{
+    quiz.answers[Q.key]=b.dataset.v;
+    if(quiz.step<QUIZ.length-1){ quiz.step++; renderQuiz(); }
+    else quizResult();
+  });
+}
+function recommendFromQuiz(a){
+  const maxPrice = a.budget==="low"?700 : a.budget==="mid"?1600 : 99999;
+  const avoidStrong = a.sens==="high" || a.exp==="new";
+  const steps=[
+    {cat:"cleanser", step:"Очищення"},
+    {cat:"toner",    step:"Тонер"},
+    {cat:"serum",    step:"Сироватка"},
+    {cat:"cream",    step:"Крем"},
+    {cat:"sun",      step:"SPF удень"},
+  ];
+  if(a.budget!=="low") steps.splice(3,0,{cat:"eye", step:"Зона очей"});
+  const picks = steps.map(s=>{
+    let pool=PRODUCTS.filter(p=>p.group==="care" && p.cat===s.cat);
+    const byConcern=pool.filter(p=>matchConcern(p,a.goal)); if(byConcern.length) pool=byConcern;
+    if(avoidStrong){ const soft=pool.filter(p=>!STRONG_RE.test((p.name+" "+(p.tags||[]).join(" ")))); if(soft.length) pool=soft; }
+    const inBudget=pool.filter(p=>p.price<=maxPrice); if(inBudget.length) pool=inBudget;
+    // преміум-бюджет → надати перевагу світовим брендам, інакше — хіт/дешевше
+    pool.sort((x,y)=> a.budget==="high"
+      ? (originOf(y)==="eu")-(originOf(x)==="eu") || (y.badge==="hit")-(x.badge==="hit")
+      : (y.badge==="hit")-(x.badge==="hit") || x.price-y.price);
+    const p=pool[0];
+    return p?{...s, p, why:reasonFor(s.cat,a)}:null;
+  }).filter(Boolean);
+  return {picks, maxPrice, avoidStrong};
+}
+function reasonFor(cat,a){
+  const goalTxt={hydra:"глибокого зволоження",aging:"антивікового догляду",acne:"контролю жирності й акне",
+    tone:"рівного тону та сяйва",calm:"заспокоєння шкіри"}[a.goal]||"вашої мети";
+  const base={
+    cleanser:"М'яко очищає, не порушуючи бар'єр",
+    toner:"Готує шкіру та підсилює зволоження",
+    serum:`Активний концентрат для ${goalTxt}`,
+    eye:"Делікатний догляд за зоною очей",
+    cream:a.type==="dry"?"Насичене зволоження для сухої шкіри":a.type==="oily"?"Легке зволоження без жирності":"Зволоження та захист бар'єру",
+    sun:"Захист від UV — головний крок проти старіння",
+  };
+  return base[cat]||"";
+}
+function quizResult(){
+  const a=quiz.answers;
+  const {picks}=recommendFromQuiz(a);
+  const total=picks.reduce((s,x)=>s+x.p.price,0);
+  const typeTxt={dry:"Суха",oily:"Жирна",combo:"Комбінована",normal:"Нормальна",sensitive:"Чутлива"}[a.type];
+  const goalTxt={hydra:"Зволоження",aging:"Антиейдж",tone:"Тон і сяйво",acne:"Акне / жирність",calm:"Заспокоєння"}[a.goal];
+  $("#quizModal").innerHTML=`
+    <button class="close" data-qclose aria-label="Закрити">×</button>
+    <div class="qz-prog done"><span style="width:100%"></span></div>
+    <div class="rt-head" style="margin-top:8px">
+      <span class="k">Готово ✨</span><h2>Ваша персональна рутина</h2>
+      <p>Підібрано під вашу шкіру за ${QUIZ.length} відповідями. Можна додати все одним кліком.</p></div>
+    <div class="qz-profile">
+      <span>🧴 ${typeTxt} шкіра</span><span>🎯 ${goalTxt}</span>
+      <span>${a.sens==="high"?"🌸 Чутлива":a.sens==="mid"?"😐 Помірна реактивність":"👍 Стійка"}</span>
+      <span>${a.budget==="low"?"💸 Економний":a.budget==="mid"?"💳 Середній":"💎 Преміум"}</span></div>
+    <div class="rt-steps">${picks.map((x,i)=>`
+      <div class="rt-step">
+        <div class="rt-num">${i+1}</div>
+        <div class="rt-art"><img src="img/p${x.p.id}.jpg" alt="" loading="lazy"
+             onerror="this.style.display='none';this.parentNode.classList.add('noimg')"><span class="em">${emojiFor(x.p)}</span></div>
+        <div class="rt-info"><span class="rt-step-n">${x.step}</span><b>${x.p.name}</b><small>${x.p.brand} · ${x.why}</small></div>
+        <div class="rt-price">${UAH(x.p.price)} грн</div>
+      </div>`).join("")}</div>
+    <div class="rt-foot">
+      <div class="rt-total"><span>Разом за рутину:</span><b>${UAH(total)} грн</b></div>
+      <button class="btn primary" data-qadd>Додати всю рутину в кошик →</button>
+      <button class="btn ghost" data-qrestart style="height:44px">↺ Пройти ще раз</button>
+    </div>`;
+  $("#quizModal [data-qclose]").onclick=closeQuiz;
+  $("#quizModal [data-qrestart]").onclick=()=>{quiz.step=0;quiz.answers={};renderQuiz();};
+  $("#quizModal [data-qadd]").onclick=()=>{
+    picks.forEach(x=>{state.cart[x.p.id]=(state.cart[x.p.id]||0)+1;});
+    saveCart(); updateCartUI(); renderGrid();
+    closeQuiz(); openDrawer(); toast("✨ Персональну рутину додано в кошик");
+  };
+}
+
 /* ---------- фільтрація + сортування ---------- */
 function currentList(){
   let list = PRODUCTS.filter(p=>p.group===state.group);
@@ -541,11 +661,15 @@ function init(){
   const hr=document.getElementById("heroRoutine"); if(hr) hr.onclick=openRoutine;
   const ro=document.getElementById("routineOverlay"); if(ro) ro.onclick=e=>{if(e.target.id==="routineOverlay")closeRoutine();};
 
+  // квіз «розумний підбір»
+  $$("[data-quiz]").forEach(el=>el.onclick=openQuiz);
+  const qo=document.getElementById("quizOverlay"); if(qo) qo.onclick=e=>{if(e.target.id==="quizOverlay")closeQuiz();};
+
   // бестселери — стрілки
   const bp=document.getElementById("bestPrev"); if(bp) bp.onclick=()=>bestScroll(-1);
   const bn=document.getElementById("bestNext"); if(bn) bn.onclick=()=>bestScroll(1);
 
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();}});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();closeQuiz();}});
 
   // кнопка «догори»
   const toTop=document.getElementById("toTop");
