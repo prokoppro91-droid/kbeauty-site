@@ -12,11 +12,28 @@ const state = {
   group: "care",          // care | pro
   cat: "all",             // активна категорія
   brand: "all",           // активний бренд (фільтр через вікно «Бренди»)
+  concern: "all",         // мета догляду (тип шкіри / задача)
   q: "",                  // пошук
   sort: "pop",            // pop | price-asc | price-desc | new
   cart: JSON.parse(localStorage.getItem("kb_cart") || "{}"),
 };
 const originOf = p => p.origin || "kr";   // kr (Корея) | eu (Європа/світові)
+
+/* мета догляду → ключові слова (шукаються у tags/назві/описі) */
+const CONCERNS = [
+  { id:"hydra",    name:"Зволоження",   icon:"💧", kw:["зволож","гіалурон","береза","зневодн"] },
+  { id:"aging",    name:"Антиейдж",     icon:"⏳", kw:["антиейдж","зморшк","колаген","ретин","пружн","ліфтинг","пептид"] },
+  { id:"acne",     name:"Акне / жирна", icon:"🌿", kw:["акне","себор","пори","bha","низький ph","постакне","матов"] },
+  { id:"tone",     name:"Тон / сяйво",  icon:"✨", kw:["сяйв","пігмент","тон","вітамін c","арбутин","ніацинамід","ресвератрол","thiamidol"] },
+  { id:"calm",     name:"Чутлива",      icon:"🤍", kw:["чутлив","заспок","центел","термальн","реактивн","почервон"] },
+  { id:"spf",      name:"Сонцезахист",  icon:"☀️", kw:["spf","сонцезахист","uva"] },
+];
+const matchConcern = (p,c)=>{
+  const conf=CONCERNS.find(x=>x.id===c); if(!conf) return true;
+  const hay=(p.name+" "+(p.tags||[]).join(" ")+" "+(p.desc||"")).toLowerCase();
+  if(c==="spf" && p.cat==="sun") return true;
+  return conf.kw.some(k=>hay.includes(k));
+};
 
 /* ---------- утиліти ---------- */
 const catName = id => (CATEGORIES.find(c=>c.id===id)||{}).name || "";
@@ -98,6 +115,19 @@ function renderChips(){
   });
 }
 
+/* ---------- чіпи «мета догляду» (лише care) ---------- */
+function renderConcerns(){
+  const row=$("#concernRow"); if(!row) return;
+  if(state.group!=="care"){ row.style.display="none"; row.innerHTML=""; return; }
+  row.style.display="flex";
+  row.innerHTML=`<span class="cn-lbl">Мета:</span>`+
+    `<button class="cn ${state.concern==='all'?'active':''}" data-cn="all">Будь-яка</button>`+
+    CONCERNS.map(c=>`<button class="cn ${state.concern===c.id?'active':''}" data-cn="${c.id}"><span>${c.icon}</span>${c.name}</button>`).join("");
+  $$("#concernRow .cn").forEach(b=>b.onclick=()=>{
+    state.concern=b.dataset.cn; renderConcerns(); renderGrid();
+  });
+}
+
 /* ---------- БРЕНДИ (вікно-перемикач + фільтр) ---------- */
 function brandsByOrigin(origin){
   const map={};
@@ -132,8 +162,8 @@ function selectBrand(brand){
       $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===p.group));
     }
   }
-  state.cat="all";
-  renderChips(); renderGrid(); renderBrandBar();
+  state.cat="all"; state.concern="all";
+  renderChips(); renderConcerns(); renderGrid(); renderBrandBar();
   closeBrands();
   document.getElementById("catalog").scrollIntoView({behavior:"smooth",block:"start"});
 }
@@ -168,11 +198,86 @@ function flyToCart(srcEl){
   setTimeout(()=>{dot.remove(); cart.classList.add("bump"); setTimeout(()=>cart.classList.remove("bump"),360);},520);
 }
 
+/* ---------- бестселери (горизонтальна каруселя) ---------- */
+function renderBest(){
+  const row=$("#bestRow"); if(!row) return;
+  const list=PRODUCTS.filter(p=>p.group===state.group && p.badge==="hit").slice(0,12);
+  const sec=$("#bestSec");
+  if(!list.length){ if(sec) sec.style.display="none"; return; }
+  if(sec) sec.style.display="";
+  row.innerHTML=list.map(p=>`
+    <article class="bcard" data-open="${p.id}">
+      <div class="bthumb">
+        <img src="img/p${p.id}.jpg" alt="${p.name}" loading="lazy"
+             onerror="this.style.display='none';this.parentNode.classList.add('noimg')">
+        <span class="em">${emojiFor(p)}</span>
+        <span class="brandtag">${p.brand}</span>
+      </div>
+      <div class="bbody">
+        <h4>${p.name}</h4>
+        <div class="bfoot"><span class="bprice">${UAH(p.price)} грн</span>
+          <button class="add" data-add="${p.id}" aria-label="Додати в кошик">+</button></div>
+      </div>
+    </article>`).join("");
+  $$("#bestRow [data-open]").forEach(b=>b.onclick=e=>{ if(e.target.closest("[data-add]"))return; openModal(+b.dataset.open);});
+  $$("#bestRow [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();addToCart(+b.dataset.add);flyToCart(b);});
+}
+function bestScroll(dir){ const r=$("#bestRow"); if(r) r.scrollBy({left:dir*Math.min(560,r.clientWidth*.8),behavior:"smooth"}); }
+
+/* ---------- «Зібрати рутину» ---------- */
+const ROUTINE = [
+  {cat:"cleanser", step:"Очищення",  why:"М'яко очищає шкіру вранці та ввечері"},
+  {cat:"toner",    step:"Тонер",     why:"Відновлює pH і готує до активів"},
+  {cat:"serum",    step:"Сироватка", why:"Активний концентрат під вашу мету"},
+  {cat:"eye",      step:"Зона очей", why:"Делікатний догляд проти втоми"},
+  {cat:"cream",    step:"Крем",      why:"Зволоження та захист бар'єру"},
+  {cat:"sun",      step:"SPF удень", why:"Головний крок проти старіння шкіри"},
+];
+function buildRoutine(){
+  return ROUTINE.map(r=>{
+    let pool=PRODUCTS.filter(p=>p.group==="care" && p.cat===r.cat);
+    if(state.concern!=="all"){ const m=pool.filter(p=>matchConcern(p,state.concern)); if(m.length) pool=m; }
+    const pick=pool.find(p=>p.badge==="hit")||pool[0];
+    return pick?{...r,p:pick}:null;
+  }).filter(Boolean);
+}
+function openRoutine(){
+  const steps=buildRoutine();
+  const total=steps.reduce((s,x)=>s+x.p.price,0);
+  const cname=(CONCERNS.find(c=>c.id===state.concern)||{}).name;
+  $("#routineModal").innerHTML=`
+    <button class="close" data-rclose aria-label="Закрити">×</button>
+    <div class="rt-head"><span class="k">Догляд під ключ</span>
+      <h2>Ваша рутина догляду</h2>
+      <p>Покрокова схема корейського догляду${cname?` · акцент: <b>${cname}</b>`:""}. Можна додати все одним кліком.</p></div>
+    <div class="rt-steps">${steps.map((x,i)=>`
+      <div class="rt-step">
+        <div class="rt-num">${i+1}</div>
+        <div class="rt-art"><img src="img/p${x.p.id}.jpg" alt="" loading="lazy"
+             onerror="this.style.display='none';this.parentNode.classList.add('noimg')"><span class="em">${emojiFor(x.p)}</span></div>
+        <div class="rt-info"><span class="rt-step-n">${x.step}</span><b>${x.p.name}</b><small>${x.p.brand} · ${x.why}</small></div>
+        <div class="rt-price">${UAH(x.p.price)} грн</div>
+      </div>`).join("")}</div>
+    <div class="rt-foot">
+      <div class="rt-total"><span>Разом за рутину:</span><b>${UAH(total)} грн</b></div>
+      <button class="btn primary" data-radd>Додати всю рутину в кошик →</button>
+    </div>`;
+  $("#routineModal [data-rclose]").onclick=closeRoutine;
+  $("#routineModal [data-radd]").onclick=()=>{
+    steps.forEach(x=>{state.cart[x.p.id]=(state.cart[x.p.id]||0)+1;});
+    saveCart(); updateCartUI(); renderGrid();
+    closeRoutine(); openDrawer(); toast("✨ Рутину додано в кошик");
+  };
+  $("#routineOverlay").classList.add("open");
+}
+function closeRoutine(){$("#routineOverlay").classList.remove("open");}
+
 /* ---------- фільтрація + сортування ---------- */
 function currentList(){
   let list = PRODUCTS.filter(p=>p.group===state.group);
   if(state.cat!=="all") list = list.filter(p=>p.cat===state.cat);
   if(state.brand!=="all") list = list.filter(p=>p.brand===state.brand);
+  if(state.concern!=="all") list = list.filter(p=>matchConcern(p,state.concern));
   if(state.q){
     const q = state.q.toLowerCase();
     list = list.filter(p =>
@@ -212,9 +317,11 @@ function renderGrid(){
         <img class="pimg" src="img/p${p.id}.jpg" alt="${p.name}" loading="lazy"
              onerror="this.style.display='none';this.parentNode.classList.add('noimg')">
         <span class="em">${emojiFor(p)}</span>
+        <span class="ph-brand">${p.brand}<small>${catName(p.cat)}</small></span>
         ${p.old?`<span class="sale">−${discPct(p)}%</span>`:""}
         <span class="brandtag">${p.brand}</span>
         ${p.badge?`<span class="badge ${p.badge}">${badgeLbl[p.badge]||p.badge}</span>`:""}
+        <span class="qv">👁 Швидкий перегляд</span>
       </div>
       <div class="body">
         <span class="cat-lbl">${catName(p.cat)}</span>
@@ -354,14 +461,14 @@ function closeModal(){$("#overlay").classList.remove("open");}
 /* ---------- розділ (group) ---------- */
 function setGroup(g){
   const enteringPro = (g==="pro" && state.group!=="pro");
-  state.group=g; state.cat="all"; state.brand="all"; renderBrandBar();
+  state.group=g; state.cat="all"; state.brand="all"; state.concern="all"; renderBrandBar();
   if(enteringPro) playSvcTrans("Професійна косметологія","Інʼєкційна естетика · пілінги · апаратні методики");
   $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===g));
   const st=$("#secTitle"); if(st) st.textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
   const sd=$("#secDesc"); if(sd) sd.textContent = g==="care"
     ? "Корейські засоби для домашнього та салонного догляду — від очищення до антивікових кремів."
     : "Інʼєкційні препарати, біоревіталізанти, пілінги та розхідники. Відпуск — лише сертифікованим фахівцям.";
-  renderCats(); renderChips(); renderGrid();
+  renderCats(); renderChips(); renderConcerns(); renderGrid(); renderBest();
 }
 
 /* ---------- інтро-заставка (показ раз за сесію) ---------- */
@@ -418,7 +525,16 @@ function init(){
   const bo=document.getElementById("brandsOverlay"); if(bo) bo.onclick=e=>{if(e.target.id==="brandsOverlay")closeBrands();};
   buildMarquee(); renderBrandBar();
 
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();}});
+  // рутина
+  const rb=document.getElementById("routineBtn"); if(rb) rb.onclick=openRoutine;
+  const hr=document.getElementById("heroRoutine"); if(hr) hr.onclick=openRoutine;
+  const ro=document.getElementById("routineOverlay"); if(ro) ro.onclick=e=>{if(e.target.id==="routineOverlay")closeRoutine();};
+
+  // бестселери — стрілки
+  const bp=document.getElementById("bestPrev"); if(bp) bp.onclick=()=>bestScroll(-1);
+  const bn=document.getElementById("bestNext"); if(bn) bn.onclick=()=>bestScroll(1);
+
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();}});
 
   // кнопка «догори»
   const toTop=document.getElementById("toTop");
