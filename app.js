@@ -15,8 +15,13 @@ const state = {
   concern: "all",         // мета догляду (тип шкіри / задача)
   q: "",                  // пошук
   sort: "pop",            // pop | price-asc | price-desc | new
+  maxPrice: null,         // фільтр ціни (грн) або null
+  favOnly: false,         // показувати лише «Обране»
   cart: JSON.parse(localStorage.getItem("kb_cart") || "{}"),
+  fav: JSON.parse(localStorage.getItem("kb_fav") || "[]"),
 };
+const saveFav = () => localStorage.setItem("kb_fav", JSON.stringify(state.fav));
+const isFav = id => state.fav.includes(id);
 const originOf = p => p.origin || "kr";   // kr (Корея) | eu (Європа/світові)
 
 /* мета догляду → ключові слова (шукаються у tags/назві/описі) */
@@ -175,6 +180,27 @@ function renderBrandBar(){
     <span class="bb-tag">${state.brand}<button data-brandclear aria-label="Скинути бренд">×</button></span>`;
   bar.querySelector("[data-brandclear]").onclick=()=>selectBrand("all");
 }
+/* ---------- ОБРАНЕ (wishlist) ---------- */
+function toggleFav(id){
+  const i=state.fav.indexOf(id), adding=i<0;
+  if(adding) state.fav.push(id); else state.fav.splice(i,1);
+  saveFav(); updateFavUI(); renderGrid();
+  toast(adding?"❤️ Додано в обране":"Прибрано з обраного");
+}
+function updateFavUI(){
+  const fc=$("#favCount"); if(fc){ fc.textContent=state.fav.length; fc.style.display=state.fav.length?"inline-grid":"none"; }
+  const ft=$("#favToggle"); if(ft) ft.classList.toggle("on",state.favOnly);
+}
+/* ---------- фільтр ціни ---------- */
+function setPriceBounds(){
+  const r=$("#priceRange"); if(!r) return;
+  const max=Math.max(...PRODUCTS.filter(p=>p.group===state.group).map(p=>p.price));
+  const top=Math.ceil(max/100)*100;
+  r.min=0; r.max=top; r.step=100; r.value=top;
+  state.maxPrice=null;
+  const pv=$("#priceVal"); if(pv) pv.textContent="будь-яка";
+}
+
 /* рухомий рядок брендів (marquee) — клік фільтрує */
 function buildMarquee(){
   const row=$("#brandMarquee"); if(!row) return;
@@ -408,6 +434,8 @@ function currentList(){
   if(state.cat!=="all") list = list.filter(p=>p.cat===state.cat);
   if(state.brand!=="all") list = list.filter(p=>p.brand===state.brand);
   if(state.concern!=="all") list = list.filter(p=>matchConcern(p,state.concern));
+  if(state.favOnly) list = list.filter(p=>isFav(p.id));
+  if(state.maxPrice) list = list.filter(p=>p.price<=state.maxPrice);
   if(state.q){
     const q = state.q.toLowerCase();
     list = list.filter(p =>
@@ -434,9 +462,11 @@ function renderGrid(){
   $("#proNote").style.display = (state.group==="pro") ? "flex" : "none";
 
   if(!list.length){
-    $("#grid").innerHTML = `<div class="empty" style="grid-column:1/-1">
-      <div class="em">🔍</div><h3>Нічого не знайдено</h3>
-      <p>Спробуйте змінити запит або категорію.</p></div>`;
+    $("#grid").innerHTML = state.favOnly
+      ? `<div class="empty" style="grid-column:1/-1"><div class="em">🤍</div><h3>В обраному поки порожньо</h3>
+         <p>Натискайте ♥ на картках товарів, щоб зберегти їх сюди.</p></div>`
+      : `<div class="empty" style="grid-column:1/-1"><div class="em">🔍</div><h3>Нічого не знайдено</h3>
+         <p>Спробуйте змінити запит, ціну або категорію.</p></div>`;
     return;
   }
   $("#grid").innerHTML = list.map(p=>{
@@ -461,6 +491,7 @@ function renderGrid(){
         <div class="foot">
           <div class="price">${UAH(p.price)} <span class="cur">грн</span>
             ${p.old?`<span class="old">${UAH(p.old)}</span><span class="off">−${discPct(p)}%</span>`:""}</div>
+          <button class="fav ${isFav(p.id)?'on':''}" data-fav="${p.id}" aria-label="${isFav(p.id)?'Прибрати з обраного':'Додати в обране'}" title="Обране">♥</button>
           <button class="add ${inCart?'in':''}" data-add="${p.id}" aria-label="${inCart?'Прибрати з кошика':'Додати в кошик'}" title="${inCart?'У кошику — натисніть, щоб прибрати':'Додати в кошик'}">${inCart?'✓':'+'}</button>
         </div>
       </div>
@@ -470,6 +501,7 @@ function renderGrid(){
   $$("#grid [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();
     const id=+b.dataset.add, adding=!state.cart[id];
     toggleCart(id); if(adding) flyToCart(b);});
+  $$("#grid [data-fav]").forEach(b=>b.onclick=e=>{e.stopPropagation();toggleFav(+b.dataset.fav);});
   $$("#grid [data-open]").forEach(b=>b.onclick=()=>openModal(+b.dataset.open));
 }
 
@@ -599,6 +631,7 @@ function setGroup(g){
   const sd=$("#secDesc"); if(sd) sd.textContent = g==="care"
     ? "Корейські засоби для домашнього та салонного догляду — від очищення до антивікових кремів."
     : "Інʼєкційні препарати, біоревіталізанти, пілінги та розхідники. Відпуск — лише сертифікованим фахівцям.";
+  setPriceBounds(); updateFavUI();
   renderCats(); renderChips(); renderConcerns(); renderGrid(); renderBest();
 }
 
@@ -664,6 +697,15 @@ function init(){
   // квіз «розумний підбір»
   $$("[data-quiz]").forEach(el=>el.onclick=openQuiz);
   const qo=document.getElementById("quizOverlay"); if(qo) qo.onclick=e=>{if(e.target.id==="quizOverlay")closeQuiz();};
+
+  // обране + фільтр ціни
+  const ft=document.getElementById("favToggle");
+  if(ft) ft.onclick=()=>{ state.favOnly=!state.favOnly; updateFavUI(); renderGrid();
+    if(state.favOnly) document.getElementById("catalog").scrollIntoView({behavior:"smooth",block:"start"}); };
+  const pr=document.getElementById("priceRange");
+  if(pr) pr.oninput=()=>{ const v=+pr.value; state.maxPrice=(v>=+pr.max)?null:v;
+    $("#priceVal").textContent=state.maxPrice?`${UAH(v)} грн`:"будь-яка"; renderGrid(); };
+  updateFavUI();
 
   // бестселери — стрілки
   const bp=document.getElementById("bestPrev"); if(bp) bp.onclick=()=>bestScroll(-1);
