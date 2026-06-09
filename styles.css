@@ -39,6 +39,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .topbar a{color:var(--gold-soft);transition:.2s}
 .topbar a:hover{color:#fff}
 .topbar .tb-right{display:flex;gap:18px;align-items:center}
+.topbar .tb-right a{display:inline-flex;align-items:center;gap:5px}
+.topbar .bi{width:14px;height:14px}
 
 header.site{
   position:sticky;top:0;z-index:50;background:rgba(251,247,241,.92);
