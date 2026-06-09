@@ -557,6 +557,7 @@ footer .social a:hover{background:var(--gold-2)}
 
 /* ---------- кнопка «Бренди» + панель ---------- */
 .groups .wrap{display:flex;justify-content:center;align-items:center;gap:14px;flex-wrap:wrap}
+.g-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
 .brand-btn{display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;
   background:#fff;border:1px solid var(--gold-soft);color:var(--ink);font-weight:600;font-size:15px;
   box-shadow:var(--shadow-sm);transition:.2s}
