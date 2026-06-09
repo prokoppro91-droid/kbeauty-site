@@ -637,17 +637,27 @@ function openDrawer(){renderDrawer();$("#drawer").classList.add("open");$("#scri
 function closeDrawer(){$("#drawer").classList.remove("open");$("#scrim").classList.remove("open");}
 
 /* ---------- замовлення ---------- */
-function checkout(){
-  const ids=Object.keys(state.cart); if(!ids.length)return;
-  let msg="Вітаю! Хочу замовити:%0A%0A";
+const ORDER_TG_ANNA = "https://t.me/Anna_L_Kosmetolog";
+function orderText(){
+  const ids=Object.keys(state.cart);
+  let t="Вітаю! Хочу замовити:\n\n";
   ids.forEach(id=>{const p=PRODUCTS.find(x=>x.id==id);const q=state.cart[id];
-    msg+=`• ${p.name} (${p.brand}) ×${q} — ${UAH(p.price*q)} грн%0A`;});
-  msg+=`%0AРазом: ${UAH(cartTotal())} грн`;
-  // Telegram приймає текст через ?text у deep-link на бота недоступний для каналу,
-  // тому ведемо в Direct Instagram + копіюємо список у буфер
-  navigator.clipboard?.writeText(decodeURIComponent(msg)).catch(()=>{});
+    t+=`• ${p.name} (${p.brand}) ×${q} — ${UAH(p.price*q)} грн\n`;});
+  t+=`\nРазом: ${UAH(cartTotal())} грн`;
+  return t;
+}
+function checkout(){
+  if(!Object.keys(state.cart).length)return;
+  // Instagram Direct не приймає текст через URL → копіюємо в буфер
+  navigator.clipboard?.writeText(orderText()).catch(()=>{});
   toast("📋 Список скопійовано — вставте у повідомлення");
   setTimeout(()=>window.open(ORDER_IG,"_blank"),700);
+}
+function checkoutTelegram(){
+  if(!Object.keys(state.cart).length)return;
+  navigator.clipboard?.writeText(orderText()).catch(()=>{});
+  toast("📋 Список скопійовано — вставте (Ctrl+V) у чат Анни");
+  setTimeout(()=>window.open(ORDER_TG_ANNA,"_blank"),700);
 }
 
 /* ---------- модалка товару ---------- */
@@ -749,6 +759,7 @@ function init(){
   $("#scrim").onclick=()=>{closeDrawer();};
   $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal();};
   $("#orderBtn").onclick=checkout;
+  const otg=document.getElementById("orderTgBtn"); if(otg) otg.onclick=checkoutTelegram;
   $("#heroBrowse").onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   const scb=document.getElementById("scBtn"); if(scb) scb.onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
 
