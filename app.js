@@ -660,6 +660,31 @@ function checkoutTelegram(){
   setTimeout(()=>window.open(ORDER_TG_ANNA,"_blank"),700);
 }
 
+/* ---------- оплата: вибір банку (поки демо) ---------- */
+const PAY_BANKS=[
+  {id:"mono",   name:"monobank",   cls:"mono"},
+  {id:"privat", name:"Privat24",   cls:"privat"},
+  {id:"abank",  name:"A-Bank",     cls:"abank"},
+  {id:"pumb",   name:"ПУМБ",       cls:"pumb"},
+  {id:"sense",  name:"sense bank", cls:"sense"},
+  {id:"oschad", name:"Ощадбанк",   cls:"oschad"},
+];
+function openPay(){
+  if(!Object.keys(state.cart).length){ toast("Кошик порожній"); return; }
+  const total=cartTotal();
+  $("#payModal").innerHTML=`
+    <button class="close" data-payclose aria-label="Закрити">×</button>
+    <div class="rt-head"><span class="k">💳 Оплата онлайн</span><h2>Оберіть банк</h2>
+      <p>Сума до сплати: <b>${UAH(total)} грн</b>. Оплатіть карткою будь-якого банку — і ми одразу готуємо відправлення.</p></div>
+    <div class="pay-grid">${PAY_BANKS.map(b=>`<button class="pm pm-${b.cls}" data-bank="${b.id}">${b.name}</button>`).join("")}</div>
+    <div class="pay-cards"><span>VISA</span><span>Mastercard</span><span> Pay</span><span>G Pay</span></div>
+    <p class="pay-note">Онлайн-оплата підключається найближчим часом. Поки що оформіть замовлення у Telegram або Instagram.</p>`;
+  $("#payModal [data-payclose]").onclick=closePay;
+  $$("#payModal [data-bank]").forEach(b=>b.onclick=()=>{ closePay(); toast("💳 Онлайн-оплата підключається — скоро запрацює"); });
+  $("#payOverlay").classList.add("open");
+}
+function closePay(){$("#payOverlay").classList.remove("open");}
+
 /* ---------- модалка товару ---------- */
 function openModal(id){
   const p=PRODUCTS.find(x=>x.id===id); if(!p)return;
@@ -760,6 +785,8 @@ function init(){
   $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeModal();};
   $("#orderBtn").onclick=checkout;
   const otg=document.getElementById("orderTgBtn"); if(otg) otg.onclick=checkoutTelegram;
+  const pnb=document.getElementById("payNowBtn"); if(pnb) pnb.onclick=openPay;
+  const po=document.getElementById("payOverlay"); if(po) po.onclick=e=>{if(e.target.id==="payOverlay")closePay();};
   $("#heroBrowse").onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
   const scb=document.getElementById("scBtn"); if(scb) scb.onclick=()=>document.getElementById("catalog").scrollIntoView({behavior:"smooth"});
 
@@ -806,7 +833,7 @@ function init(){
   const bp=document.getElementById("bestPrev"); if(bp) bp.onclick=()=>bestScroll(-1);
   const bn=document.getElementById("bestNext"); if(bn) bn.onclick=()=>bestScroll(1);
 
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();closeQuiz();closeCompat();}});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeDrawer();closeBrands();closeRoutine();closeQuiz();closeCompat();closePay();}});
 
   // кнопка «догори»
   const toTop=document.getElementById("toTop");

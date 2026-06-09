@@ -348,6 +348,32 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 .dfoot .order.tg{background:#2aabee;margin-bottom:10px}
 .dfoot .order.tg:hover{background:#1d97d6}
 .dfoot .order.tg .bi{width:20px;height:20px}
+/* кнопка «Оплата зараз» */
+.dfoot .order.pay{flex-direction:column;gap:1px;height:auto;padding:11px 16px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1c1a17}
+.dfoot .order.pay:hover{filter:brightness(1.05);transform:translateY(-1px)}
+.dfoot .order.pay small{font-weight:600;font-size:11px;opacity:.78}
+.pay-or{text-align:center;font-size:12px;color:var(--ink-soft);margin:12px 0 10px;position:relative}
+.pay-or::before,.pay-or::after{content:"";position:absolute;top:50%;width:28%;height:1px;background:var(--line)}
+.pay-or::before{left:0}.pay-or::after{right:0}
+
+/* вікно вибору банку */
+.pay-modal{max-width:440px}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.pay-grid .pm{height:52px;border-radius:14px;font-weight:700;font-size:15px;letter-spacing:.01em;
+  display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.12);transition:.18s}
+.pay-grid .pm:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);filter:brightness(1.08)}
+.pm-mono{background:#000}
+.pm-privat{background:#4ca72c}
+.pm-abank{background:#ff4326}
+.pm-pumb{background:#c20e2f}
+.pm-sense{background:#26262e}
+.pm-oschad{background:#0b7a3b}
+.pay-cards{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.pay-cards span{font-size:11px;font-weight:700;color:var(--ink-soft);background:var(--bg-2);
+  border:1px solid var(--line);padding:4px 10px;border-radius:8px}
+.pay-note{text-align:center;font-size:12px;color:var(--ink-soft);line-height:1.5}
+@media(max-width:480px){.pay-grid{grid-template-columns:1fr 1fr}}
 .dfoot .hint{font-size:12px;color:var(--ink-soft);text-align:center;margin-top:10px}
 .cart-empty{text-align:center;padding:60px 20px;color:var(--ink-soft)}
 .cart-empty .em{font-size:50px}
