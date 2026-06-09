@@ -130,14 +130,14 @@ function renderConcerns(){
 
 /* ---------- БРЕНДИ (вікно-перемикач + фільтр) ---------- */
 function brandsByOrigin(origin){
-  const map={};
-  PRODUCTS.forEach(p=>{ if(originOf(p)===origin){ map[p.brand]=(map[p.brand]||0)+1; } });
-  return Object.entries(map).sort((a,b)=>b[1]-a[1]); // [ [brand,count], ... ]
+  const set=new Set();
+  PRODUCTS.forEach(p=>{ if(originOf(p)===origin) set.add(p.brand); });
+  return [...set].sort((a,b)=>a.localeCompare(b,"uk",{sensitivity:"base"})); // за абеткою
 }
 function openBrands(){
   const eu=brandsByOrigin("eu"), kr=brandsByOrigin("kr");
-  const chip=([b,c])=>`<button class="brand-chip ${state.brand===b?'active':''}" data-brand="${b}">
-      <span class="bc-mono">${b.trim()[0]}</span><span class="bc-n">${b}</span><span class="bc-c">${c}</span></button>`;
+  const chip=b=>`<button class="brand-chip ${state.brand===b?'active':''}" data-brand="${b}">
+      <span class="bc-mono">${b.trim()[0]}</span><span class="bc-n">${b}</span></button>`;
   $("#brandsModal").innerHTML=`
     <button class="close" data-bclose aria-label="Закрити">×</button>
     <div class="bm-head"><span class="k">Каталог брендів</span>
@@ -216,11 +216,21 @@ function renderBest(){
       <div class="bbody">
         <h4>${p.name}</h4>
         <div class="bfoot"><span class="bprice">${UAH(p.price)} грн</span>
-          <button class="add" data-add="${p.id}" aria-label="Додати в кошик">+</button></div>
+          <button class="add ${state.cart[p.id]?'in':''}" data-add="${p.id}" aria-label="${state.cart[p.id]?'Прибрати з кошика':'Додати в кошик'}">${state.cart[p.id]?'✓':'+'}</button></div>
       </div>
     </article>`).join("");
   $$("#bestRow [data-open]").forEach(b=>b.onclick=e=>{ if(e.target.closest("[data-add]"))return; openModal(+b.dataset.open);});
-  $$("#bestRow [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();addToCart(+b.dataset.add);flyToCart(b);});
+  $$("#bestRow [data-add]").forEach(b=>b.onclick=e=>{e.stopPropagation();
+    const id=+b.dataset.add, adding=!state.cart[id];
+    toggleCart(id); if(adding) flyToCart(b);});
+}
+/* синхронізувати стан кнопок «+/✓» у бестселерах без перебудови (щоб не скидати скрол) */
+function syncBest(){
+  $$("#bestRow [data-add]").forEach(b=>{
+    const inc=!!state.cart[+b.dataset.add];
+    b.classList.toggle("in",inc); b.textContent=inc?"✓":"+";
+    b.setAttribute("aria-label",inc?"Прибрати з кошика":"Додати в кошик");
+  });
 }
 function bestScroll(dir){ const r=$("#bestRow"); if(r) r.scrollBy({left:dir*Math.min(560,r.clientWidth*.8),behavior:"smooth"}); }
 
@@ -369,6 +379,7 @@ function setQty(id,d){
 function updateCartUI(){
   $("#cartCount").textContent = cartCount();
   $("#cartCount").style.display = cartCount()? "grid":"none";
+  syncBest();
 }
 function renderDrawer(){
   const ids=Object.keys(state.cart);
