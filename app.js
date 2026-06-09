@@ -766,6 +766,18 @@ function init(){
   $$("[data-quiz]").forEach(el=>el.onclick=openQuiz);
   const qo=document.getElementById("quizOverlay"); if(qo) qo.onclick=e=>{if(e.target.id==="quizOverlay")closeQuiz();};
 
+  // темна тема
+  const tb=document.getElementById("themeBtn");
+  const themeIcon=()=>{ if(tb) tb.textContent=document.documentElement.getAttribute("data-theme")==="dark"?"☀️":"🌙"; };
+  themeIcon();
+  if(tb) tb.onclick=()=>{
+    const dark=document.documentElement.getAttribute("data-theme")==="dark";
+    if(dark){document.documentElement.removeAttribute("data-theme");}
+    else{document.documentElement.setAttribute("data-theme","dark");}
+    try{localStorage.setItem("kb_theme",dark?"light":"dark");}catch(e){}
+    themeIcon();
+  };
+
   // сумісність активів
   $$("[data-compat]").forEach(el=>el.onclick=openCompat);
   const co=document.getElementById("compatOverlay"); if(co) co.onclick=e=>{if(e.target.id==="compatOverlay")closeCompat();};

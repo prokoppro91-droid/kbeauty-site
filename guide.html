@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){try{if(localStorage.getItem('kb_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
 <title>Гайд по догляду за шкірою · K-Beauty Profi</title>
 <meta name="description" content="Покроковий гайд по догляду за шкірою: правильна послідовність нанесення засобів, підбір за типом шкіри, активні інгредієнти та поширені помилки. K-Beauty Profi.">
 <meta name="theme-color" content="#c9a44c">
@@ -17,7 +18,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=20">
+<link rel="stylesheet" href="styles.css?v=26">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23c9a44c'/><text x='50' y='70' font-size='58' text-anchor='middle' fill='white' font-family='Georgia'>KB</text></svg>">
 </head>
 <body class="guide-page">
@@ -37,7 +38,8 @@
     <span class="mark">KB</span>
     <span class="lt"><b>K-Beauty Profi</b><span>Korean Cosmetics</span></span>
   </a>
-  <a class="btn ghost" href="index.html" style="margin-left:auto;height:44px">← До каталогу</a>
+  <button class="theme-toggle" id="themeBtn" aria-label="Перемкнути тему" style="margin-left:auto">🌙</button>
+  <a class="btn ghost" href="index.html" style="height:44px">← До каталогу</a>
 </div></header>
 
 <!-- hero гайду -->
@@ -189,10 +191,15 @@
 <!-- нагору -->
 <button class="to-top" id="toTop" aria-label="Догори" title="Догори">↑</button>
 <script>
-(function(){var t=document.getElementById('toTop');if(!t)return;
+(function(){var t=document.getElementById('toTop');if(t){
  var f=function(){t.classList.toggle('show',window.scrollY>700)};
  window.addEventListener('scroll',f,{passive:true});f();
- t.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};})();
+ t.onclick=function(){window.scrollTo({top:0,behavior:'smooth'})};}
+ var tb=document.getElementById('themeBtn');
+ var ic=function(){if(tb)tb.textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';};ic();
+ if(tb)tb.onclick=function(){var d=document.documentElement.getAttribute('data-theme')==='dark';
+  if(d)document.documentElement.removeAttribute('data-theme');else document.documentElement.setAttribute('data-theme','dark');
+  try{localStorage.setItem('kb_theme',d?'light':'dark');}catch(e){}ic();};})();
 </script>
 </body>
 </html>

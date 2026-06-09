@@ -804,6 +804,78 @@ footer .social a:hover{background:var(--gold-2)}
 .dcompat:hover{background:var(--bg-2)}
 
 /* =====================================================================
+   ТЕМНА ТЕМА + плавні переходи між сторінками (View Transitions)
+   ===================================================================== */
+@view-transition{navigation:auto}
+::view-transition-old(root),::view-transition-new(root){animation-duration:.34s}
+
+.theme-toggle{width:42px;height:42px;border-radius:999px;background:var(--bg-2);border:1px solid var(--line);
+  font-size:18px;display:grid;place-items:center;transition:.2s;flex:0 0 auto}
+.theme-toggle:hover{border-color:var(--gold);transform:translateY(-1px)}
+
+:root[data-theme=dark]{
+  --ink:#f0e8dc; --ink-soft:#a99c8a;
+  --bg:#15120e; --bg-2:#1e1813; --card:#221c16;
+  --line:#352d23; --mint:#17251e; --powder:#281d21; --pro:#cfa580; --pro-bg:#2a211b;
+  --gold-soft:#4a3b20;
+  --shadow:0 14px 44px rgba(0,0,0,.55); --shadow-sm:0 5px 18px rgba(0,0,0,.42);
+}
+[data-theme=dark] .topbar{background:linear-gradient(90deg,#100d0a,#1c1712)}
+[data-theme=dark] header.site{background:rgba(21,18,14,.9)}
+[data-theme=dark] .search input{background:var(--card);color:var(--ink)}
+[data-theme=dark] .search input::placeholder{color:var(--ink-soft)}
+[data-theme=dark] .usp{background:var(--bg-2)}
+[data-theme=dark] .marquee{background:linear-gradient(90deg,var(--bg-2),var(--bg),var(--bg-2))}
+[data-theme=dark] .gt,[data-theme=dark] .brand-btn,[data-theme=dark] .chip,[data-theme=dark] .cn,
+[data-theme=dark] .sort select,[data-theme=dark] .fav-toggle,[data-theme=dark] .dcompat,
+[data-theme=dark] .best-nav button,[data-theme=dark] .guide-nav a,[data-theme=dark] .type-card,
+[data-theme=dark] .ing,[data-theme=dark] .mistake-list li,[data-theme=dark] .perk,
+[data-theme=dark] .rv,[data-theme=dark] .rcol{background:var(--card);color:var(--ink);border-color:var(--line)}
+[data-theme=dark] .modal,[data-theme=dark] .brands-modal,[data-theme=dark] .routine-modal,
+[data-theme=dark] .quiz-modal{background:var(--card)}
+[data-theme=dark] .modal .close,[data-theme=dark] .brands-modal .close,
+[data-theme=dark] .routine-modal .close,[data-theme=dark] .quiz-modal .close{background:var(--bg-2);color:var(--ink)}
+[data-theme=dark] .chip.active,[data-theme=dark] .brand-chip.active,
+[data-theme=dark] .gt button.active{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1c1a17;border-color:transparent}
+[data-theme=dark] .cart-btn,[data-theme=dark] .quiz-btn{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1c1a17}
+[data-theme=dark] .cart-btn:hover{background:linear-gradient(135deg,var(--gold-2),var(--gold))}
+[data-theme=dark] .cart-btn .count{background:#1c1a17;color:var(--gold)}
+[data-theme=dark] .add{background:var(--gold-2);color:#1c1a17}
+[data-theme=dark] .add.in{background:var(--mint);color:#7fd3a8}
+[data-theme=dark] .card .thumb,[data-theme=dark] .bthumb,[data-theme=dark] .rt-art,
+[data-theme=dark] .cp-item .em,[data-theme=dark] .modal .mart{background:linear-gradient(135deg,var(--bg-2),var(--card))}
+[data-theme=dark] .card .thumb.noimg{background:radial-gradient(120% 90% at 50% 0%,#2a2119,transparent 60%),linear-gradient(135deg,#2a1d22,#17251e)}
+[data-theme=dark] .routine-btn{background:linear-gradient(135deg,var(--card),var(--bg-2))}
+[data-theme=dark] .guide-link{background:linear-gradient(135deg,#3a2f17,var(--card));color:var(--gold)}
+[data-theme=dark] .qz-opt{background:var(--bg-2)}
+[data-theme=dark] .qz-opt.sel{background:linear-gradient(135deg,#3a2f17,var(--card))}
+[data-theme=dark] .rt-step,[data-theme=dark] .brand-chip,[data-theme=dark] .qz-profile span,
+[data-theme=dark] .mtags span,[data-theme=dark] .qz-prog{background:var(--bg-2)}
+[data-theme=dark] .brandtag,[data-theme=dark] .thumb .brandtag{background:rgba(20,16,12,.85);color:var(--ink)}
+[data-theme=dark] .qv{background:rgba(0,0,0,.75)}
+[data-theme=dark] footer.site{background:#100d0a;border-color:var(--line)}
+[data-theme=dark] .reviews,[data-theme=dark] .perks,[data-theme=dark] .bestsellers,
+[data-theme=dark] .guide-sec.alt,[data-theme=dark] .guide-cta{background:var(--bg)}
+[data-theme=dark] .order{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#1c1a17}
+[data-theme=dark] .drawer,[data-theme=dark] .brands-modal,[data-theme=dark] .toast{color:var(--ink)}
+[data-theme=dark] .badge.hit{background:#3a2a14;color:#e8b86a}
+[data-theme=dark] .badge.new{background:#16301f;color:#7fd3a8}
+[data-theme=dark] img.pimg,[data-theme=dark] .bthumb img,[data-theme=dark] .mimg{filter:brightness(.94)}
+/* темна тема — додаткові поверхні (кошик, тост, гайд, сумісність) */
+[data-theme=dark] .drawer{background:var(--card)}
+[data-theme=dark] .drawer .dfoot{background:var(--bg-2)}
+[data-theme=dark] .ditem .di-art{background:linear-gradient(135deg,var(--bg-2),var(--card))}
+[data-theme=dark] .toast{background:#2a2218;color:var(--ink)}
+[data-theme=dark] .rsteps li{background:var(--bg-2);border-color:var(--line)}
+[data-theme=dark] .rsteps li.hl{background:linear-gradient(135deg,#3a2f17,var(--bg-2))}
+[data-theme=dark] .tip{background:#16241e;color:#a7d8c3}
+[data-theme=dark] .cp-ok{background:#16241e;color:#a7d8c3;border-color:#27463a}
+[data-theme=dark] .cp-warn{background:#2a2113;border-color:#4a3b20}
+[data-theme=dark] .cp-warn p{color:#e3c489}
+[data-theme=dark] .guide-sec.alt{background:var(--bg-2)}
+[data-theme=dark] .pro-note{background:var(--pro-bg);border-color:#4a3b2e;color:#d8b89c}
+
+/* =====================================================================
    СТОРІНКА «ГАЙД ПО ДОГЛЯДУ»
    ===================================================================== */
 .guide-hero{background:
