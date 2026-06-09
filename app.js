@@ -676,7 +676,7 @@ function openPay(){
     <button class="close" data-payclose aria-label="Закрити">×</button>
     <div class="rt-head"><span class="k">💳 Оплата онлайн</span><h2>Оберіть банк</h2>
       <p>Сума до сплати: <b>${UAH(total)} грн</b>. Оплатіть карткою будь-якого банку — і ми одразу готуємо відправлення.</p></div>
-    <div class="pay-grid">${PAY_BANKS.map(b=>`<button class="pm pm-${b.cls}" data-bank="${b.id}">${b.name}</button>`).join("")}</div>
+    <div class="pay-grid">${PAY_BANKS.map(b=>`<button class="pm" data-bank="${b.id}"><img src="img/banks/${b.id}.png" alt="${b.name}" loading="lazy"><span>${b.name}</span></button>`).join("")}</div>
     <div class="pay-cards"><span>VISA</span><span>Mastercard</span><span> Pay</span><span>G Pay</span></div>
     <p class="pay-note">Онлайн-оплата підключається найближчим часом. Поки що оформіть замовлення у Telegram або Instagram.</p>`;
   $("#payModal [data-payclose]").onclick=closePay;

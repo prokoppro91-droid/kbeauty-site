@@ -289,7 +289,7 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 .empty .em{font-size:54px}
 
 /* ---------- МОДАЛКА ТОВАРУ ---------- */
-.overlay{position:fixed;inset:0;background:rgba(40,32,24,.5);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.overlay{position:fixed;inset:0;background:rgba(40,32,24,.5);backdrop-filter:blur(4px);z-index:120;display:none;align-items:center;justify-content:center;padding:20px}
 .overlay.open{display:flex}
 .modal{background:#fff;border-radius:24px;max-width:760px;width:100%;max-height:90vh;overflow:auto;box-shadow:var(--shadow);position:relative}
 .modal .close{position:absolute;top:16px;right:16px;width:40px;height:40px;border-radius:999px;background:rgba(255,255,255,.9);font-size:22px;display:grid;place-items:center;z-index:2;box-shadow:var(--shadow-sm)}
@@ -359,16 +359,13 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 
 /* вікно вибору банку */
 .pay-modal{max-width:440px}
-.pay-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.pay-grid .pm{height:52px;border-radius:14px;font-weight:700;font-size:15px;letter-spacing:.01em;
-  display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.12);transition:.18s}
-.pay-grid .pm:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);filter:brightness(1.08)}
-.pm-mono{background:#000}
-.pm-privat{background:#4ca72c}
-.pm-abank{background:#ff4326}
-.pm-pumb{background:#c20e2f}
-.pm-sense{background:#26262e}
-.pm-oschad{background:#0b7a3b}
+.pay-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px}
+.pay-grid .pm{display:flex;flex-direction:column;align-items:center;gap:7px;padding:14px 6px 10px;
+  background:#fff;border:1px solid var(--line);border-radius:14px;color:var(--ink);transition:.18s}
+.pay-grid .pm img{width:40px;height:40px;object-fit:contain;border-radius:9px}
+.pay-grid .pm span{font-size:11.5px;font-weight:700;text-align:center;line-height:1.1}
+.pay-grid .pm:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:var(--gold)}
+@media(max-width:480px){.pay-grid{gap:8px}.pay-grid .pm span{font-size:10.5px}}
 .pay-cards{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .pay-cards span{font-size:11px;font-weight:700;color:var(--ink-soft);background:var(--bg-2);
   border:1px solid var(--line);padding:4px 10px;border-radius:8px}
