@@ -58,8 +58,10 @@ const cartCount = () => Object.values(state.cart).reduce((a,b)=>a+b,0);
 
 /* ---------- розпив (відлив) кремів ---------- */
 const DECANT_SIZES = [5,10,20,30,50];                 // мл
+const DECANT_CATS  = ["cream","serum","toner","cleanser"]; // креми, сироватки, тонери/есенції, гелі для вмивання
 const volMl = p => { const m=String(p.vol||"").match(/(\d+)\s*мл/i); return m?+m[1]:null; };
-const decantSizes = p => { const v=volMl(p); return (p&&p.cat==="cream"&&v) ? DECANT_SIZES.filter(s=>s<v) : []; };
+const decantSizes = p => { const v=volMl(p); return (p&&DECANT_CATS.includes(p.cat)&&v) ? DECANT_SIZES.filter(s=>s<v) : []; };
+const canDecant = p => decantSizes(p).length>0;
 function decantPrice(p,ml){ const v=volMl(p); if(!v) return 0; return Math.max(40, Math.round(p.price/v*ml*1.25/5)*5); } // +25% за розлив, округлення до 5 грн
 
 /* ключ кошика: "<id>" = повна банка; "<id>:<ml>" = відлив */
@@ -566,7 +568,7 @@ function renderGrid(){
       <div class="body">
         <span class="cat-lbl">${catName(p.cat)}</span>
         <h3 data-open="${p.id}">${p.name}</h3>
-        <span class="vol">${p.vol||""}</span>
+        <span class="vol">${p.vol||""}${canDecant(p)?`<span class="decant-tag" data-open="${p.id}">🧪 можна на розпив</span>`:""}</span>
         <div class="rating">${starRow(r.rate)}<span class="rate">${r.rate}</span><span class="rc">· ${r.cnt}</span></div>
         <div class="foot">
           <div class="price">${UAH(p.price)} <span class="cur">грн</span>

@@ -850,6 +850,12 @@ footer .contacts .bi{vertical-align:-2px}
 .dc-sz span{font-size:11px;color:var(--gold-2);font-weight:700}
 .dc-sz:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
 .dc-note{margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.5}
+/* позначка «на розпив» на картці каталогу */
+.card .decant-tag{display:inline-block;margin-left:7px;vertical-align:middle;font-size:10px;font-weight:800;
+  letter-spacing:.02em;color:#2e7d5b;background:var(--mint);border:1px solid #bfe3d2;
+  padding:2px 8px;border-radius:999px;cursor:pointer;transition:.18s}
+.card .decant-tag:hover{background:#cdeede}
+[data-theme=dark] .card .decant-tag{background:#16241e;border-color:#27463a;color:#7fd3a8}
 @media(max-width:560px){.dc-sizes{grid-template-columns:repeat(3,1fr)}}
 /* бейдж відливу в кошику */
 .di-art .di-decant{position:absolute;bottom:2px;right:2px;background:var(--gold-2);color:#fff;
