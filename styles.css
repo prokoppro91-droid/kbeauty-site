@@ -264,6 +264,10 @@ header.site .wrap{display:flex;align-items:center;gap:20px;height:74px}
 .price-ctrl{display:flex;align-items:center;gap:10px;font-size:13.5px;color:var(--ink-soft)}
 .price-ctrl b{color:var(--ink)}
 .price-ctrl input[type=range]{width:170px;accent-color:var(--gold-2);cursor:pointer}
+/* перемикач «лише на розпив» */
+.decant-toggle:hover{border-color:#2e7d5b;color:#2e7d5b}
+.decant-toggle.on{background:var(--mint);border-color:#2e7d5b;color:#2e7d5b}
+[data-theme=dark] .decant-toggle.on{background:#16241e;border-color:#27463a;color:#7fd3a8}
 @media(max-width:560px){.filter-bar{gap:12px}.price-ctrl input[type=range]{width:130px}}
 
 /* рейтинг (соц-доказ) */

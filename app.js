@@ -17,6 +17,7 @@ const state = {
   sort: "pop",            // pop | price-asc | price-desc | new
   maxPrice: null,         // фільтр ціни (грн) або null
   favOnly: false,         // показувати лише «Обране»
+  decantOnly: false,      // показувати лише засоби з розпивом
   cart: JSON.parse(localStorage.getItem("kb_cart") || "{}"),
   fav: JSON.parse(localStorage.getItem("kb_fav") || "[]"),
 };
@@ -517,6 +518,7 @@ function currentList(){
   if(state.brand!=="all") list = list.filter(p=>p.brand===state.brand);
   if(state.concern!=="all") list = list.filter(p=>matchConcern(p,state.concern));
   if(state.favOnly) list = list.filter(p=>isFav(p.id));
+  if(state.decantOnly) list = list.filter(p=>canDecant(p));
   if(state.maxPrice) list = list.filter(p=>p.price<=state.maxPrice);
   if(state.q){
     const q = state.q.toLowerCase();
@@ -547,6 +549,9 @@ function renderGrid(){
     $("#grid").innerHTML = state.favOnly
       ? `<div class="empty" style="grid-column:1/-1"><div class="em">🤍</div><h3>В обраному поки порожньо</h3>
          <p>Натискайте ♥ на картках товарів, щоб зберегти їх сюди.</p></div>`
+      : state.decantOnly
+      ? `<div class="empty" style="grid-column:1/-1"><div class="em">🧪</div><h3>Тут немає засобів на розпив</h3>
+         <p>На розпив доступні креми, сироватки, тонери та гелі для вмивання.</p></div>`
       : `<div class="empty" style="grid-column:1/-1"><div class="em">🔍</div><h3>Нічого не знайдено</h3>
          <p>Спробуйте змінити запит, ціну або категорію.</p></div>`;
     return;
@@ -756,7 +761,8 @@ function closeModal(){$("#overlay").classList.remove("open");}
 /* ---------- розділ (group) ---------- */
 function setGroup(g){
   const enteringPro = (g==="pro" && state.group!=="pro");
-  state.group=g; state.cat="all"; state.brand="all"; state.concern="all"; renderBrandBar();
+  state.group=g; state.cat="all"; state.brand="all"; state.concern="all"; state.decantOnly=false;
+  $("#decantToggle")?.classList.remove("on"); renderBrandBar();
   if(enteringPro) playSvcTrans("Професійна косметологія","Інʼєкційна естетика · пілінги · апаратні методики");
   $$("#gt button").forEach(b=>b.classList.toggle("active",b.dataset.group===g));
   const st=$("#secTitle"); if(st) st.textContent = g==="care" ? "Косметика для догляду" : "Професійна косметологія";
@@ -856,6 +862,9 @@ function init(){
   const pr=document.getElementById("priceRange");
   if(pr) pr.oninput=()=>{ const v=+pr.value; state.maxPrice=(v>=+pr.max)?null:v;
     $("#priceVal").textContent=state.maxPrice?`${UAH(v)} грн`:"будь-яка"; renderGrid(); };
+  const dt=document.getElementById("decantToggle");
+  if(dt) dt.onclick=()=>{ state.decantOnly=!state.decantOnly; dt.classList.toggle("on",state.decantOnly); renderGrid();
+    if(state.decantOnly) document.getElementById("catalog").scrollIntoView({behavior:"smooth",block:"start"}); };
   updateFavUI();
 
   // бестселери — стрілки
