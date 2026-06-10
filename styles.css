@@ -839,6 +839,41 @@ footer .contacts .bi{vertical-align:-2px}
   color:var(--ink);font-weight:600;font-size:14px;margin-bottom:10px;transition:.2s}
 .dcompat:hover{background:var(--bg-2)}
 
+/* ---------- розпив (відлив) у модалці ---------- */
+.decant{margin-top:14px;border:1px dashed var(--gold);border-radius:14px;padding:14px;background:var(--bg)}
+.decant .dc-h{font-weight:700;font-size:14.5px;margin-bottom:10px;display:flex;flex-direction:column}
+.decant .dc-h small{font-weight:500;font-size:12px;color:var(--ink-soft);margin-top:2px}
+.dc-sizes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.dc-sz{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:11px;
+  background:#fff;border:1px solid var(--line);transition:.18s;cursor:pointer}
+.dc-sz b{font-size:14px}
+.dc-sz span{font-size:11px;color:var(--gold-2);font-weight:700}
+.dc-sz:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.dc-note{margin-top:10px;font-size:11.5px;color:var(--ink-soft);line-height:1.5}
+@media(max-width:560px){.dc-sizes{grid-template-columns:repeat(3,1fr)}}
+/* бейдж відливу в кошику */
+.di-art .di-decant{position:absolute;bottom:2px;right:2px;background:var(--gold-2);color:#fff;
+  font-size:9px;font-weight:800;padding:1px 5px;border-radius:6px}
+.ditem .di-art{position:relative}
+
+/* ---------- доставка за кордон ---------- */
+.ship-intl{background:linear-gradient(135deg,var(--mint),#fff);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.ship-intl .wrap{display:flex;gap:22px;align-items:center;padding:30px 22px}
+.ship-intl .si-ic{font-size:46px;flex:0 0 auto}
+.ship-intl h3{font-family:var(--serif);font-size:clamp(20px,2.6vw,28px);margin-bottom:6px}
+.si-countries{font-size:13px;color:var(--ink-soft);margin-bottom:12px;line-height:1.6}
+.si-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.si-list li{font-size:13.5px;color:var(--ink-soft)}
+.si-list b{color:var(--ink)}
+@media(max-width:620px){.ship-intl .wrap{flex-direction:column;text-align:center;gap:14px}.si-list{text-align:left}}
+.intl-hint{font-size:11.5px;color:var(--ink-soft);background:var(--mint);border-radius:9px;padding:8px 11px;margin-bottom:8px;line-height:1.45}
+
+/* темна тема — нові блоки */
+[data-theme=dark] .decant{background:var(--bg-2)}
+[data-theme=dark] .dc-sz{background:var(--card)}
+[data-theme=dark] .ship-intl{background:linear-gradient(135deg,#16241e,var(--bg))}
+[data-theme=dark] .intl-hint{background:#16241e;color:#a7d8c3}
+
 /* =====================================================================
    ТЕМНА ТЕМА + плавні переходи між сторінками (View Transitions)
    ===================================================================== */

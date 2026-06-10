@@ -55,8 +55,20 @@ const discPct = p => p.old ? Math.round((1-p.price/p.old)*100) : 0;
 const emojiFor = p => (CATEGORIES.find(c=>c.id===p.cat)||{}).icon || "🧴";
 const saveCart = () => localStorage.setItem("kb_cart", JSON.stringify(state.cart));
 const cartCount = () => Object.values(state.cart).reduce((a,b)=>a+b,0);
-const cartTotal = () => Object.entries(state.cart)
-  .reduce((s,[id,q])=>{const p=PRODUCTS.find(x=>x.id==id);return s+(p?p.price*q:0);},0);
+
+/* ---------- розпив (відлив) кремів ---------- */
+const DECANT_SIZES = [5,10,20,30,50];                 // мл
+const volMl = p => { const m=String(p.vol||"").match(/(\d+)\s*мл/i); return m?+m[1]:null; };
+const decantSizes = p => { const v=volMl(p); return (p&&p.cat==="cream"&&v) ? DECANT_SIZES.filter(s=>s<v) : []; };
+function decantPrice(p,ml){ const v=volMl(p); if(!v) return 0; return Math.max(40, Math.round(p.price/v*ml*1.25/5)*5); } // +25% за розлив, округлення до 5 грн
+
+/* ключ кошика: "<id>" = повна банка; "<id>:<ml>" = відлив */
+const parseKey  = k => { const [id,ml]=String(k).split(":"); return {id:+id, ml:ml?+ml:0}; };
+const keyProduct= k => PRODUCTS.find(x=>x.id===parseKey(k).id);
+const keyPrice  = k => { const {ml}=parseKey(k); const p=keyProduct(k); if(!p) return 0; return ml?decantPrice(p,ml):p.price; };
+const keyName   = k => { const {ml}=parseKey(k); const p=keyProduct(k); if(!p) return ""; return p.name + (ml?` · відлив ${ml} мл`:""); };
+
+const cartTotal = () => Object.entries(state.cart).reduce((s,[k,q])=>s+keyPrice(k)*q,0);
 
 /* ---------- преміальні SVG-іконки категорій ---------- */
 const ICONS = {
@@ -464,7 +476,7 @@ function analyzeCompat(list){
   return {present:[...present], warns, am, pm, strong:strong.length};
 }
 function openCompat(){
-  let list=Object.keys(state.cart).map(id=>PRODUCTS.find(p=>p.id==id)).filter(Boolean);
+  let list=[...new Set(Object.keys(state.cart).map(k=>keyProduct(k)).filter(Boolean))];
   let src="кошика";
   if(!list.length){ list=state.fav.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean); src="обраного"; }
   const m=$("#compatModal");
@@ -590,10 +602,16 @@ function toggleCart(id){
     addToCart(id);
   }
 }
-function removeFromCart(id){delete state.cart[id];saveCart();updateCartUI();renderGrid();renderDrawer();}
-function setQty(id,d){
-  state.cart[id]=(state.cart[id]||0)+d;
-  if(state.cart[id]<=0) delete state.cart[id];
+/* додати відлив (розпив) */
+function addDecant(id,ml){
+  const k=`${id}:${ml}`; state.cart[k]=(state.cart[k]||0)+1;
+  saveCart(); updateCartUI();
+  const p=keyProduct(k); if(p) toast(`✓ «${p.name}» — відлив ${ml} мл додано`);
+}
+function removeFromCart(key){delete state.cart[key];saveCart();updateCartUI();renderGrid();renderDrawer();}
+function setQty(key,d){
+  state.cart[key]=(state.cart[key]||0)+d;
+  if(state.cart[key]<=0) delete state.cart[key];
   saveCart();updateCartUI();renderGrid();renderDrawer();
 }
 function updateCartUI(){
@@ -609,29 +627,30 @@ function renderDrawer(){
     $("#dfoot").style.display="none"; return;
   }
   $("#dfoot").style.display="block";
-  $("#ditems").innerHTML=ids.map(id=>{
-    const p=PRODUCTS.find(x=>x.id==id); if(!p)return"";
-    const q=state.cart[id];
+  $("#ditems").innerHTML=ids.map(k=>{
+    const p=keyProduct(k); if(!p)return"";
+    const {ml}=parseKey(k); const q=state.cart[k];
     return `<div class="ditem">
       <div class="di-art">
         <img src="img/p${p.id}.jpg" alt="${p.name}"
              onerror="this.style.display='none';this.parentNode.classList.add('noimg')">
         <span class="em">${emojiFor(p)}</span>
+        ${ml?`<span class="di-decant">${ml} мл</span>`:""}
       </div>
       <div class="di-info">
-        <b>${p.name}</b><small>${p.brand} · ${p.vol||""}</small>
-        <div class="di-price">${UAH(p.price*q)} грн</div>
+        <b>${p.name}</b><small>${p.brand} · ${ml?`відлив ${ml} мл`:(p.vol||"")}</small>
+        <div class="di-price">${UAH(keyPrice(k)*q)} грн</div>
         <div class="qty">
-          <button data-dec="${id}">−</button><span>${q}</span><button data-inc="${id}">+</button>
+          <button data-dec="${k}">−</button><span>${q}</span><button data-inc="${k}">+</button>
         </div>
       </div>
-      <button class="di-rm" data-rm="${id}">видалити</button>
+      <button class="di-rm" data-rm="${k}">видалити</button>
     </div>`;
   }).join("");
   $("#dtotal").textContent=UAH(cartTotal())+" грн";
-  $$("#ditems [data-inc]").forEach(b=>b.onclick=()=>setQty(+b.dataset.inc,1));
-  $$("#ditems [data-dec]").forEach(b=>b.onclick=()=>setQty(+b.dataset.dec,-1));
-  $$("#ditems [data-rm]").forEach(b=>b.onclick=()=>removeFromCart(+b.dataset.rm));
+  $$("#ditems [data-inc]").forEach(b=>b.onclick=()=>setQty(b.dataset.inc,1));
+  $$("#ditems [data-dec]").forEach(b=>b.onclick=()=>setQty(b.dataset.dec,-1));
+  $$("#ditems [data-rm]").forEach(b=>b.onclick=()=>removeFromCart(b.dataset.rm));
 }
 function openDrawer(){renderDrawer();$("#drawer").classList.add("open");$("#scrim").classList.add("open");}
 function closeDrawer(){$("#drawer").classList.remove("open");$("#scrim").classList.remove("open");}
@@ -639,10 +658,10 @@ function closeDrawer(){$("#drawer").classList.remove("open");$("#scrim").classLi
 /* ---------- замовлення ---------- */
 const ORDER_TG_ANNA = "https://t.me/Anna_L_Kosmetolog";
 function orderText(){
-  const ids=Object.keys(state.cart);
+  const keys=Object.keys(state.cart);
   let t="Вітаю! Хочу замовити:\n\n";
-  ids.forEach(id=>{const p=PRODUCTS.find(x=>x.id==id);const q=state.cart[id];
-    t+=`• ${p.name} (${p.brand}) ×${q} — ${UAH(p.price*q)} грн\n`;});
+  keys.forEach(k=>{const p=keyProduct(k);const q=state.cart[k];
+    t+=`• ${keyName(k)} (${p.brand}) ×${q} — ${UAH(keyPrice(k)*q)} грн\n`;});
   t+=`\nРазом: ${UAH(cartTotal())} грн`;
   return t;
 }
@@ -716,10 +735,18 @@ function openModal(id){
           <li><span class="ck">✓</span>${p.pro?"Відпуск і консультація сертифікованим фахівцям":"Оплата при отриманні або підбір косметолога"}</li>
         </ul>
         <button class="madd" data-add="${p.id}">🛍️ Додати в кошик</button>
+        ${decantSizes(p).length?`
+        <div class="decant">
+          <div class="dc-h">🧪 Купити на розпив <small>відлив у стерильну тару — спробувати перед повним об'ємом</small></div>
+          <div class="dc-sizes">${decantSizes(p).map(ml=>`
+            <button class="dc-sz" data-decant="${ml}"><b>${ml} мл</b><span>${UAH(decantPrice(p,ml))} грн</span></button>`).join("")}</div>
+          <div class="dc-note">ℹ️ Відлив не підлягає доставці за кордон (лише оригінальне паковання).</div>
+        </div>`:""}
       </div>
     </div>`;
   $("#modal [data-mclose]").onclick=closeModal;
   $("#modal [data-add]").onclick=()=>{addToCart(p.id);closeModal();openDrawer();};
+  $$("#modal [data-decant]").forEach(b=>b.onclick=()=>{addDecant(p.id,+b.dataset.decant);closeModal();openDrawer();});
   $("#overlay").classList.add("open");
 }
 function closeModal(){$("#overlay").classList.remove("open");}
